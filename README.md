@@ -37,4 +37,4 @@ Website thương mại điện tử là một nền tảng cho phép người d�
 ## Cách chạy dự án
 1. Clone repository về máy:
    ```bash
-git clone https://github.com/your-repo/e-commerce-website.git](https://github.com/HOKAGEMINATO222/CNWeb.git
+   https://github.com/HOKAGEMINATO222/CNWeb.git
