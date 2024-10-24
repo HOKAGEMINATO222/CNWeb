@@ -18,7 +18,7 @@ Website thương mại điện tử là một nền tảng cho phép người d�
 
 4. **Vũ Minh Hoàng**
    - MSSV: 20215386
-   - Vai trò: 
+   - Vai trò: Frontend developer
 
 ## Chức năng chính
 - **Quản lý sản phẩm**: Cho phép người dùng xem, tìm kiếm, và thêm sản phẩm vào giỏ hàng.
