@@ -6,11 +6,11 @@ Website thương mại điện tử là một nền tảng cho phép người d�
 ## Thành viên nhóm
 1. **Phạm Minh Hoàng**
    - MSSV: 20215582
-   - Vai trò: 
+   - Vai trò: Frontend developer
 
 2. **Phan Việt Hoàng**
    - MSSV: 20210372
-   - Vai trò:backend developer
+   - Vai trò: Backend developer
 
 3. **Vũ Trần Hoàng**
    - MSSV: 20210374
