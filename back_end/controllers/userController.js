@@ -32,20 +32,24 @@ exports.registerUser = async (req, res) => {
 
 // Đăng nhập người dùng
 exports.loginUser = async (req, res) => {
+    console.log('Received login request:', req.body); // Log yêu cầu đăng nhập
     const { phoneNumber, password } = req.body;
 
     try {
         const user = await User.findOne({ phoneNumber });
         if (!user) {
+            console.log('User not found');
             return res.status(400).json({ message: 'Thông tin đăng nhập không đúng!' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            console.log('Password mismatch');
             return res.status(400).json({ message: 'Thông tin đăng nhập không đúng!' });
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        console.log('Login successful:', user.userName);
         res.json({ token, userName: user.userName });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi máy chủ!' });

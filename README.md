@@ -14,7 +14,7 @@ Website thương mại điện tử là một nền tảng cho phép người d�
 
 3. **Vũ Trần Hoàng**
    - MSSV: 20210374
-   - Vai trò: 
+   - Vai trò: Backend developer
 
 4. **Vũ Minh Hoàng**
    - MSSV: 20215386

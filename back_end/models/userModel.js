@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     diaChi: { type: String, required: true },
 }, {
-    timestamps: true, // Tự động thêm timestamp cho các trường createdAt và updatedAt
+    timestamps: true, 
 });
 
 // Chỉ định tên collection là 'users'

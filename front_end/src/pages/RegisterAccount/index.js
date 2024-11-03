@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import addressData from './address-data.json';
 import { Link } from "react-router-dom";
+import axios from "axios"; // Import axios
 import "./RegisterAccount.css";
-// import AllApi from "../../api/api";
-import { useNavigate } from "react-router-dom";
-// import { AuthContext } from "../../components/AuthContext/AuthContext";
 
 export default function RegisterPage() {
     const [phonenumber, setPhonenumber] = useState("");
@@ -18,10 +16,6 @@ export default function RegisterPage() {
     const citisRef = useRef(null);
     const districtsRef = useRef(null);
     const wardsRef = useRef(null);
-    // const navigate = useNavigate();
-    // const { login } = useContext(AuthContext);
-
-
 
     useEffect(() => {
         renderCity(addressData);
@@ -90,24 +84,14 @@ export default function RegisterPage() {
             setDiaChi(addressString);
             const newUser = {
                 userName: username,
-                phonenumber: phonenumber,
+                phoneNumber: phonenumber,
                 password: password,
                 diaChi: addressString,
             };
             const savedUser = await addUser(newUser);
             if (savedUser) {
-                // Đăng nhập người dùng và lưu vào AuthContext
-                const user = {
-                    phoneNumber: newUser.phonenumber,
-                    password: newUser.password,
-                }
-                // await AllApi.login(user)
-                // login(savedUser.userName);
-
-                // Chuyển hướng về trang chủ và hiển thị thông báo thành công
                 setSuccessMessage("Đăng ký thành công! Đang chuyển hướng...");
                 setTimeout(() => {
-                    // navigate('/');
                     window.location.reload();
                 }, 2000);
             } else {
@@ -117,26 +101,29 @@ export default function RegisterPage() {
     };
 
     const addUser = async (newUser) => {
-        // try {
-        //     const response = await AllApi.register(newUser);
-        //     if (response.data.success) {
-        //         return response.data.data;
-        //     } else {
-        //         if (response.message === "User existed")
-        //             setErrors((prevErrors) => ({
-        //                 ...prevErrors,
-        //                 phonenumber: "Số điện thoại đã được sử dụng!",
-        //             }));
-        //         if (response.message === "Failed : DuplicateUserName")
-        //             setErrors((prevErrors) => ({
-        //                 ...prevErrors,
-        //                 username: "Tên người dùng đã được sử dụng!",
-        //             }));
-        //     }
-        // } catch (error) {
-        //     console.error('Error occurred while checking user:', error);
-        //     return null;
-        // }
+        try {
+            const response = await axios.post("http://localhost:5000/users/register", newUser); 
+            if (response.data.success) {
+                return response.data.data;
+            } else {
+                if (response.data.message === "User existed") {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        phonenumber: "Số điện thoại đã được sử dụng!",
+                    }));
+                }
+                if (response.data.message === "Failed : DuplicateUserName") {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        username: "Tên người dùng đã được sử dụng!",
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Error occurred while registering user:', error);
+            setErrors({ apiError: "Đã có lỗi xảy ra. Vui lòng thử lại sau." });
+            return null;
+        }
     };
 
     return (
@@ -163,13 +150,13 @@ export default function RegisterPage() {
                         <label htmlFor="address">Địa chỉ:</label>
                         <div className="select-container">
                             <select className="form-select" id="city" ref={citisRef} onChange={handleCityChange}>
-                                <option value="" selected>Tỉnh/Thành phố</option>
+                                <option value="">Tỉnh/Thành phố</option>
                             </select>
                             <select className="form-select" id="district" ref={districtsRef} onChange={handleDistrictChange}>
-                                <option value="" selected>Quận/huyện</option>
+                                <option value="">Quận/huyện</option>
                             </select>
                             <select className="form-select" id="ward" ref={wardsRef}>
-                                <option value="" selected>Phường/xã</option>
+                                <option value="">Phường/xã</option>
                             </select>
                         </div>
                         {errors.diaChi && <div className="error">{errors.diaChi}</div>}
@@ -194,10 +181,8 @@ export default function RegisterPage() {
                     <button type="submit">Tạo tài khoản</button>
                 </form>
                 {successMessage && <div className="success-message">{successMessage}</div>}
-
+                {errors.apiError && <div className="error">{errors.apiError}</div>} {/* Display API error */}
             </div>
         </div>
     );
 }
-
-
