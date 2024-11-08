@@ -1,4 +1,4 @@
-function adminLayout({children}){
+function adminLayout({ children }) {
     return (
         <>{children}</>
     );

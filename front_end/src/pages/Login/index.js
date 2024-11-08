@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import "./Login.css";
+import { Link } from "react-router-dom";
+// import AllApi from "../../api/api";
+// import { AuthContext } from "../../components/AuthContext/AuthContext";
 
 export default function LoginPage() {
     const [phonenumber, setPhonenumber] = useState("");
@@ -88,7 +91,7 @@ export default function LoginPage() {
                         </div>
                         {errors.password && <div className="error">{errors.password}</div>}
                     </div>
-                    <div className="signup-link">Bạn chưa có tài khoản? <a href="/register">Đăng ký ngay!</a></div>
+                    <div className="signup-link">Bạn chưa có tài khoản? <Link to="/register">Đăng ký ngay!</Link></div>
 
                     <button className="button" type="submit">Đăng nhập</button>
                 </form>

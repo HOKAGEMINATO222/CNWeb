@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { UserOutlined, ProductOutlined, BellOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Flex, Menu } from "antd";
 import AdminUser from "../../componet/AdminUser/AdminUser";
-import AdminProduct from "../../componet/AdminProduct/AdminProduct";
+// import AdminProduct from "../../componet/AdminProduct/AdminProduct";
 import boxImage from "./box.png";
-import AdminOrder from "../../componet/AdminOrder/AdminOrder";
+// import AdminOrder from "../../componet/AdminOrder/AdminOrder";
 import styles from "./AdminPage.module.css";
-import useSignalR from "../../components/useSignalR/useSignalR";
+// import useSignalR from "../../components/useSignalR/useSignalR";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const logout = () => {
   console.log("User logged out");
@@ -36,8 +35,8 @@ const items = [
 const Admin = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
-    if (role !== "admin") window.location.href = "/";
-    
+    // if (role !== "admin") window.location.href = "/";
+
   });
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState("");
@@ -47,7 +46,7 @@ const Admin = () => {
     setVisible(false);
     setIsRead(false);
   };
-  useSignalR(showMessage, "admin");
+  //useSignalR(showMessage, "admin");
   const handleNewMessage = () => {
     //khi có thông báo mới thì setIsRead(false) để hiện dấu chấm đỏ
     setIsRead(true);
@@ -66,10 +65,10 @@ const Admin = () => {
     switch (key) {
       case "users":
         return <AdminUser />;
-      case "products":
-        return <AdminProduct />;
-      case "orders":
-        return <AdminOrder />;
+      // case "products":
+      //   return <AdminProduct />;
+      // case "orders":
+      //   return <AdminOrder />;
       default:
         return <></>;
     }
@@ -97,9 +96,15 @@ const Admin = () => {
               </Badge>
             </Tippy>
           </div>
-          <Button ghost onClick={() => logout()}>
+          <Button ghost onClick={() => logout()}
+            style={{
+              marginLeft: 10,
+              marginRight: 40
+            }}
+          >
             Đăng xuất
           </Button>
+
         </div>
       </header>
       <div style={{ display: "flex", paddingTop: "60px" }}>
