@@ -1,5 +1,5 @@
 import './App.css';
-import Home from "./pages/Home/Home";
+import Home from "./pages/Home/home";
 import Login from "./pages/Login/index";
 import RegisterPage from './pages/RegisterAccount';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import một lần
@@ -8,11 +8,14 @@ import { CartProvider } from './components/CartContext/CartContext';
 import { AuthProvider } from './components/AuthContext/AuthContext';
 
 function App() {
+  const isLoggedIn = localStorage.getItem("role"); // Kiểm tra trạng thái đăng nhập
+
   return (
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
             {publicRoutes.map((route, index) => {
