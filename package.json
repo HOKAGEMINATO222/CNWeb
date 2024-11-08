@@ -1,0 +1,14 @@
+{
+  "name": "cnweb",
+  "version": "1.0.0",
+  "description": "Website thương mại điện tử là một nền tảng cho phép người dùng mua các sản phẩm hoặc dịch vụ trực tuyến. Mục tiêu của dự án này là xây dựng một website thương mại điện tử hiện đại với giao diện thân thiện, dễ sử dụng, và tích hợp các chức năng như giỏ hàng, thanh toán, và quản lý sản phẩm.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
