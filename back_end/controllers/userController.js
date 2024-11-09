@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/UserModel');
+const User = require('../models/userModel');
 const { registerSchema, loginSchema } = require('../validation/user')
 
 // Đăng ký người dùng
@@ -89,6 +89,7 @@ exports.loginUser = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ success: true, token, userName: user.userName, role: user.role });
+        console.log('Đăng nhập thành công! ', user.userName, token );
 
     } catch (error) {
         console.error('Error during login:', error);

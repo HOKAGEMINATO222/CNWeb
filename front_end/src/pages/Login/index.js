@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import "./Login.css";
+import { Link } from "react-router-dom";
+
 
 export default function LoginPage() {
     const [phonenumber, setPhonenumber] = useState("");
@@ -42,23 +44,35 @@ export default function LoginPage() {
 
         try {
             const response = await axios.post(
-                "http://localhost:5000/login",
+                "http://localhost:5000/login", // URL của API
                 {
-                    phoneNumber: user.phoneNumber,
-                    password: user.password,
+                  phoneNumber: user.phoneNumber,  // Số điện thoại của người dùng
+                  password: user.password,        // Mật khẩu của người dùng
                 },
-                { headers: { "Content-Type": "application/json" } }
-            ); // Gửi yêu cầu đến API
-
+                {
+                  headers: {
+                    "Content-Type": "application/json", 
+                  },
+                  withCredentials: true,  
+                }
+              );
+              
+              // Xử lý phản hồi
+              console.log(response.data);
+              
             // console.log(user.phoneNumber);
             // console.log(user.password);
             console.log(response.data.success);
             console.log(response.data);
             
-
             if (response.data.success) {
                 if (response.data.role === "admin") {
-                    localStorage.setItem("role", "admin");
+                    // Lưu token vào localStorage
+                    localStorage.setItem("authToken", response.data.token); 
+
+                    // Cập nhật role vào localStorage 
+                    localStorage.setItem("role", response.data.role);
+                    
                     window.location.href = "/admin"; // Chuyển hướng đến trang admin
                 } else {
                     window.location.href = "/"; // Chuyển hướng đến trang chủ
@@ -99,7 +113,7 @@ export default function LoginPage() {
                         </div>
                         {errors.password && <div className="error">{errors.password}</div>}
                     </div>
-                    <div className="signup-link">Bạn chưa có tài khoản? <a href="/register">Đăng ký ngay!</a></div>
+                    <div className="signup-link">Bạn chưa có tài khoản? <Link to="/register">Đăng ký ngay!</Link></div>
 
                     <button className="button" type="submit">Đăng nhập</button>
                 </form>
