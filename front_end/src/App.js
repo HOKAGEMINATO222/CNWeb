@@ -1,7 +1,9 @@
 import './App.css';
-import Home from "./pages/Home/home";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login/index";
 import RegisterPage from './pages/RegisterAccount';
+import CartPage from './pages/Cart/CartPage'; // Trang giỏ hàng mới thêm
+import Header from "./components/Header";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import một lần
 import { publicRoutes } from './routes';
 import { CartProvider } from './components/CartContext/CartContext';
@@ -13,11 +15,14 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
+        <Header /> {/* Hiển thị tiêu đề "Chào mừng đến TECH STORE" ở mọi trang */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
+            <Route path="/" element={<Home isLoggedIn={!isLoggedIn} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
+            {/* Route cho trang giỏ hàng */}
+            <Route path="/cart" element={<CartPage />} />
             {publicRoutes.map((route, index) => {
               const Page = route.component;
               const Layout = route.layout;

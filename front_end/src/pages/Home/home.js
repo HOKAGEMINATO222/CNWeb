@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./home.css";
+// import Header from "../../components/Header"; // Import Header
+import "./Home.css";
 
 export default function Home({ isLoggedIn }) {
     return (
         <div className="home-container">
-            {/* Phần tiêu đề */}
-            <header className="home-header">
-                <h1 className="home-title">Chào mừng đến TECH STORE</h1>
-            </header>
+        
 
             {/* Phần tìm kiếm và các nút */}
             <div className="top-bar">
@@ -38,7 +36,7 @@ export default function Home({ isLoggedIn }) {
                     <div className="category-item">Điện Thoại</div>
                     <div className="category-item">Laptop</div>
                     <div className="category-item">Phụ Kiện</div>
-                    <div className="category-item">Âm Thanh</div>
+                    <div className="category-item">Tai Nghe</div>
                     <div className="category-item">Dây Sạc</div>
                 </div>
             </section>
