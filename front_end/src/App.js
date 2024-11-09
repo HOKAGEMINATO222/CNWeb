@@ -2,6 +2,7 @@ import './App.css';
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/index";
 import RegisterPage from './pages/RegisterAccount';
+import ProfilePage from "./pages/Profile/ProfilePage";
 import CartPage from './pages/Cart/CartPage'; // Trang giỏ hàng mới thêm
 import Header from "./components/Header";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import một lần
@@ -23,6 +24,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             {/* Route cho trang giỏ hàng */}
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             {publicRoutes.map((route, index) => {
               const Page = route.component;
               const Layout = route.layout;

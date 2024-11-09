@@ -6,7 +6,7 @@ export default function CartPage() {
     const [cartItems, setCartItems] = useState([
         {
             id: 1,
-            name: "Điện thoại iPhone 13 Pro Max",
+            name: "Điện thoại iPhone 16 Pro Max",
             price: 30000000,
             quantity: 1,
             selected: false,
