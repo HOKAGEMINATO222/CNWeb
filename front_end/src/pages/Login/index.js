@@ -41,12 +41,23 @@ export default function LoginPage() {
         };
 
         try {
-            const response = await axios.post("http://localhost:5000/users/login", user); // Gửi yêu cầu đến API
+            const response = await axios.post(
+                "http://localhost:5000/login",
+                {
+                    phoneNumber: user.phoneNumber,
+                    password: user.password,
+                },
+                { headers: { "Content-Type": "application/json" } }
+            ); // Gửi yêu cầu đến API
+
+            // console.log(user.phoneNumber);
+            // console.log(user.password);
+            console.log(response.data.success);
+            console.log(response.data);
+            
 
             if (response.data.success) {
-                console.log(response);
-                // Xử lý thành công đăng nhập
-                if (response.data.data[0] === "admin") {
+                if (response.data.role === "admin") {
                     localStorage.setItem("role", "admin");
                     window.location.href = "/admin"; // Chuyển hướng đến trang admin
                 } else {
@@ -54,11 +65,11 @@ export default function LoginPage() {
                 }
             } else {
                 const newErrors = { ...errors };
-                if (response.data.message === "Invalid phonenumber") {
-                    newErrors.phonenumber = "Số điện thoại không tồn tại!";
+                if (response.data.message === "User not found") {
+                    newErrors.phonenumber = "Số điện thoại chưa được đăng ký!";
                 }
-                if (response.data.message === "Wrong password") {
-                    newErrors.password = "Sai mật khẩu!";
+                if (response.data.message === "Invalid password") {
+                    newErrors.password = "Mật khẩu không chính xác!";
                 }
                 setErrors(newErrors);
             }
