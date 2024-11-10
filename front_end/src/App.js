@@ -5,10 +5,12 @@ import RegisterPage from './pages/RegisterAccount';
 import ProfilePage from "./pages/Profile/ProfilePage";
 import CartPage from './pages/Cart/CartPage'; // Trang giỏ hàng mới thêm
 import Header from "./components/Header";
+import ProductDetail from "./pages/Product/ProductDetail";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import một lần
 import { publicRoutes } from './routes';
 import { CartProvider } from './components/CartContext/CartContext';
 import { AuthProvider } from './components/AuthContext/AuthContext';
+
 
 function App() {
   const isLoggedIn = localStorage.getItem("role"); // Kiểm tra trạng thái đăng nhập
@@ -19,7 +21,7 @@ function App() {
         <Header /> {/* Hiển thị tiêu đề "Chào mừng đến TECH STORE" ở mọi trang */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home isLoggedIn={!isLoggedIn} />} />
+            <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
             {/* Route cho trang giỏ hàng */}
