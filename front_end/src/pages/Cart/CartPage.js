@@ -25,6 +25,13 @@ export default function CartPage() {
             quantity: 1,
             selected: false,
         },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
     ]);
 
     const handleQuantityChange = (id, value) => {
@@ -102,8 +109,13 @@ export default function CartPage() {
                     </div>
                 ))}
             </div>
-            <div className="cart-footer">
+            {/* Nút Xóa Tất Cả */}
+            <div className="remove-all-container">
                 <button onClick={handleRemoveAll} className="remove-all-button">Xóa Tất Cả</button>
+            </div>
+
+            {/* Footer chứa Tổng thanh toán và Mua Hàng */}
+            <div className="cart-footer">
                 <div className="total-amount">
                     <span>Tổng thanh toán ({cartItems.filter(item => item.selected).length} sản phẩm): {totalAmount.toLocaleString()}₫</span>
                 </div>

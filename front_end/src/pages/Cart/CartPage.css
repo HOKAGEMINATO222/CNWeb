@@ -1,11 +1,10 @@
 .cart-container {
-    max-width: 100%;
+    max-width: 90%;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
 }
 
-/* Thanh trên cùng chứa TECH STORE và Giỏ Hàng */
 .cart-header-bar {
     display: flex;
     justify-content: space-between;
@@ -26,10 +25,6 @@
     font-weight: bold;
     color: blue;
     text-decoration: none;
-}
-
-.tech-store-link:hover {
-    text-decoration: underline;
 }
 
 .cart-title {
@@ -59,22 +54,24 @@
     cursor: pointer;
 }
 
-.cart-table-header {
+/* Table Header and Rows */
+.cart-table-header, .cart-item {
     display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
-    gap: 10px;
-    font-weight: bold;
+    grid-template-columns: 0.2fr 2fr 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 10px 0;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+}
+
+.cart-table-header {
+    font-weight: bold;
+    text-align: left;
 }
 
 .cart-item {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
-    gap: 10px;
-    padding: 10px 0;
-    align-items: center;
-    border-bottom: 1px solid #eee;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .cart-item-checkbox {
@@ -92,7 +89,7 @@
     font-weight: bold;
 }
 
-.cart-item-price {
+.cart-item-price, .cart-item-total {
     font-size: 1em;
     color: #000;
 }
@@ -110,14 +107,10 @@
     cursor: pointer;
 }
 
-.cart-item-total {
-    font-weight: bold;
-}
-
-.cart-footer {
-    margin-top: 20px;
-    font-size: 1.2em;
+/* Nút Xóa Tất Cả */
+.remove-all-container {
     text-align: left;
+    margin-top: 10px;
 }
 
 .remove-all-button {
@@ -126,14 +119,20 @@
     border: none;
     cursor: pointer;
     font-size: 1em;
-    margin-bottom: 10px; /* Tạo khoảng cách cho nút riêng một dòng */
 }
 
-.total-amount {
+/* Footer chứa Tổng thanh toán và Mua Hàng */
+.cart-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.total-amount {
+    font-weight: bold;
 }
 
 .checkout-button {
@@ -144,5 +143,4 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    margin-top: 10px;
 }

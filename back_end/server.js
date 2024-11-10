@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const productRoutes = require('./routes/productRoutes');
 const cors = require('cors');
 const app = express();
 require('dotenv').config();
@@ -27,6 +28,9 @@ app.use('/', userRoutes);
 
 // Sử dụng rotes admin
 app.use('/admin', adminRoutes);
+
+// Sử dụng routes product
+app.use('/product', productRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server đang chạy trên cổng ${PORT}`);
