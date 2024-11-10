@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import "./Login.css";
 import { Link } from "react-router-dom";
-
+// import AllApi from "../../api/api";
+// import { AuthContext } from "../../components/AuthContext/AuthContext";
 
 export default function LoginPage() {
     const [phonenumber, setPhonenumber] = useState("");

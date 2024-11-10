@@ -43,9 +43,7 @@ class AllApi {
     deleteProduct(id) {
         return axios.delete(base_url + 'Product/' + id);
     }
-    getUsers() {
-        return axios.get(base_url + 'admin/users');  // Lấy tất cả người dùng từ admin
-    }
+   
     updateUser(id, password, model) {
         return axios.put(base_url + 'User' + id, password, model)
     }

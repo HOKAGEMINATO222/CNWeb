@@ -136,24 +136,24 @@ const AdminUser = () => {
 
   const deleteUser = async (record) => {
     try {
-      await deleteUserAPI(record.id);
+      await deleteUserAPI(record._id);
 
       const updatedUsers = users.filter(
-        (user) => user.id !== record.id
+        (user) => user._id !== record._id
       );
       setUsers(updatedUsers);
 
-      message.success(`Đã xóa user: ${record.id}`);
+      message.success(`Đã xóa user: ${record._id}`);
     } catch (error) {
       console.error(error);
-      message.error(`Xóa user thất bại: ${record.id}`);
+      message.error(`Xóa user thất bại: ${record._id}`);
     }
   };
 
   const { confirm } = Modal;
   const showDeleteConfirm = (user) => {
     confirm({
-      title: `Xác nhận xóa user ${user.id}!`,
+      title: `Xác nhận xóa user ${user._id}!`,
       icon: <ExclamationCircleFilled />,
       content: `User name: ${user.userName}`,
       onOk() {
