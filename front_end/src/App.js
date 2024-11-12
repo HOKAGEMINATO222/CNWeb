@@ -21,7 +21,8 @@ function App() {
         <Header /> {/* Hiển thị tiêu đề "Chào mừng đến TECH STORE" ở mọi trang */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
+            <Route path="/" element={<Home isLoggedIn={!isLoggedIn} />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
             {/* Route cho trang giỏ hàng */}

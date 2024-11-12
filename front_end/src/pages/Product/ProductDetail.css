@@ -1,48 +1,78 @@
-.product-detail-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .product-detail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .product-detail-image {
-    width: 100%;
-    max-width: 300px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .product-detail-price {
-    font-size: 24px;
-    color: #e60023;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
-  .product-detail-rating {
-    font-size: 16px;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  
-  .add-to-cart-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .add-to-cart-button:hover {
-    background-color: #0056b3;
-  }
-  
+.product-detail-page {
+  background-color: #f9f9f9; /* Nền riêng cho trang chi tiết */
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.product-detail-page .product-detail-container {
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.product-detail-page .back-button {
+  text-decoration: none;
+  color: blue;
+  margin-bottom: 20px;
+  display: inline-block;
+  font-size: 1em;
+}
+
+.product-detail-page .product-detail {
+  display: flex;
+  gap: 20px;
+}
+
+.product-detail-page .product-image {
+  width: 300px;
+  height: auto;
+  object-fit: cover;
+}
+
+.product-detail-page .product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-detail-page .product-name {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.product-detail-page .product-price {
+  font-size: 1.5em;
+  color: red;
+  margin: 10px 0;
+}
+
+.product-detail-page .product-rating {
+  font-size: 1em;
+  color: #555;
+}
+
+.product-detail-page .product-description {
+  margin: 20px 0;
+  color: #333;
+}
+
+.product-detail-page .add-to-cart-button {
+  padding: 10px 20px;
+  background-color: #ff5a00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+.product-detail-page .product-image {
+  width: 300px;
+  height: auto;
+  object-fit: cover;
+  border: 5px solid #ddd; /* Thêm viền cho ảnh */
+  border-radius: 10px;     /* Bo tròn góc ảnh nếu muốn */
+}

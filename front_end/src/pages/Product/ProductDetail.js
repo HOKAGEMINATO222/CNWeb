@@ -1,36 +1,43 @@
-// src/pages/ProductDetail.js
-
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+// components/ProductDetail.js
+import React from "react";
+import { useParams, Link } from "react-router-dom";
 import "./ProductDetail.css";
 
-export default function ProductDetail({ categoryData }) {
-    const { productName } = useParams(); // Lấy tên sản phẩm từ URL
-    const navigate = useNavigate();
+const products = {
+    1: {
+        id: 1,
+        image: "/images/iphone16promax.png",
+        name: "Iphone 16 Pro Max",
+        price: "46.999.000₫",
+        rating: 4.8,
+        sold: "60,1k",
+        description: "Điện thoại cao cấp với màn hình lớn và nhiều tính năng vượt trội."
+    },
+    // Thêm dữ liệu cho các sản phẩm khác nếu cần
+};
 
-    // Tìm kiếm sản phẩm trong dữ liệu
-    const product = categoryData["Tất cả sản phẩm"].find(
-        (item) => item.name === productName
-    );
+export default function ProductDetail() {
+    const { productId } = useParams();
+    const product = products[productId];
 
-    // Nếu không tìm thấy sản phẩm, điều hướng về trang chính
     if (!product) {
-        navigate("/");
-        return null;
+        return <p>Sản phẩm không tồn tại.</p>;
     }
 
     return (
-        <div className="product-detail-container">
-            <button onClick={() => navigate(-1)}>← Trở lại</button>
-            <div className="product-detail">
-                <img src={product.image} alt={product.name} className="product-detail-image" />
-                <h2>{product.name}</h2>
-                <p className="product-detail-price">{product.price}</p>
-                <p className="product-detail-rating">⭐ {product.rating} | Đã bán {product.sold}</p>
-                <div className="product-detail-description">
-                    <p>Mô tả sản phẩm: Đây là mô tả chi tiết cho {product.name}.</p>
+        <div className="product-detail-page">
+            <div className="product-detail-container">
+                <Link to="/" className="back-button">← Trở về trang chủ</Link>
+                <div className="product-detail">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <div className="product-info">
+                        <h2 className="product-name">{product.name}</h2>
+                        <p className="product-price">{product.price}</p>
+                        <p className="product-rating">⭐ {product.rating} | Đã bán {product.sold}</p>
+                        <p className="product-description">{product.description}</p>
+                        <button className="add-to-cart-button">Thêm vào giỏ hàng</button>
+                    </div>
                 </div>
-                <button className="add-to-cart-button">Thêm vào giỏ hàng</button>
             </div>
         </div>
     );
