@@ -1,3 +1,8 @@
+html, body {
+  height: 100%; /* Cho phép nội dung mở rộng */
+  overflow: auto !important; /* Buộc bật cuộn */
+}
+
 .App {
   text-align: center;
 }

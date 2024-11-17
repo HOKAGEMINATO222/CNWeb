@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./CartPage.css";
 
 export default function CartPage() {
@@ -34,6 +34,8 @@ export default function CartPage() {
         },
     ]);
 
+    const navigate = useNavigate();
+
     const handleQuantityChange = (id, value) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
@@ -52,6 +54,15 @@ export default function CartPage() {
 
     const handleRemoveAll = () => {
         setCartItems([]);
+    };
+
+    const handleCheckout = () => {
+        const selectedItems = cartItems.filter(item => item.selected);
+        if (selectedItems.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+        navigate('/checkout', { state: { selectedItems } }); // Chuyển sang trang thanh toán và truyền dữ liệu
     };
 
     const totalAmount = cartItems.reduce(
@@ -73,6 +84,7 @@ export default function CartPage() {
                 </div>
             </div>
 
+            {/* Danh sách sản phẩm */}
             <div className="cart-table">
                 <div className="cart-table-header">
                     <span></span> {/* Cột tickbox, bỏ tiêu đề */}
@@ -109,6 +121,7 @@ export default function CartPage() {
                     </div>
                 ))}
             </div>
+
             {/* Nút Xóa Tất Cả */}
             <div className="remove-all-container">
                 <button onClick={handleRemoveAll} className="remove-all-button">Xóa Tất Cả</button>
@@ -119,7 +132,7 @@ export default function CartPage() {
                 <div className="total-amount">
                     <span>Tổng thanh toán ({cartItems.filter(item => item.selected).length} sản phẩm): {totalAmount.toLocaleString()}₫</span>
                 </div>
-                <button className="checkout-button">Mua Hàng</button>
+                <button className="checkout-button" onClick={handleCheckout}>Mua Hàng</button>
             </div>
         </div>
     );

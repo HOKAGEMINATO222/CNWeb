@@ -1,7 +1,7 @@
 // pages/Home/Home.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Home.css";
+import "./home.css";
 
 export default function Home({ isLoggedIn }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
