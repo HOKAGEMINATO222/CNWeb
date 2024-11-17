@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
     const token = req.headers['authorization'];
 
     if (!token) {
-        return res.status(403).json({ message: 'Không có quyền truy cập!' });
+        return res.status(403).json({ message: 'Bạn chưa đăng nhập' });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
