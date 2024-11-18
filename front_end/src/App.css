@@ -1,5 +1,6 @@
 html, body {
   height: 100%; /* Cho phép nội dung mở rộng */
+  width: 100%;
   overflow: auto !important; /* Buộc bật cuộn */
 }
 
