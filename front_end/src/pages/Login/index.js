@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import axios
 import "./Login.css";
 import { Link } from "react-router-dom";
 // import AllApi from "../../api/api";
@@ -8,11 +9,11 @@ export default function LoginPage() {
     const [phonenumber, setPhonenumber] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
-    // const { login } = useContext(AuthContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    });
+    }, []);
+
     const validatePhoneNumber = (phoneNumber) => {
         return /^(0)[3|5|7|8|9][0-9]{8}$/.test(phoneNumber);
     };
@@ -42,30 +43,55 @@ export default function LoginPage() {
             password: password,
         };
 
-        // try {
-        //     // const response = await AllApi.login(user);
-        //     if (response.data.success) {
-        //         console.log(response);
-        //         // login(response.data.message);
-        //         if (response.data.data[0] === "admin") {
-        //             localStorage.setItem("role", "admin");
-        //             window.location.href = "/admin";
-        //         }
-        //         else window.location.href = "/"; // Chuyển hướng đến trang chủ
-        //     } else {
-        //         const newErrors = { ...errors };
-        //         if (response.data.message === "Invalid phonenumber") {
-        //             newErrors.data.phonenumber = "Số điện thoại không tồn tại!";
-        //         }
-        //         if (response.data.message === "Wrong password") {
-        //             newErrors.password = "Sai mật khẩu!";
-        //         }
-        //         setErrors(newErrors);
-        //     }
-        // } catch (error) {
-        //     console.error("Error during login:", error);
-        //     setErrors({ apiError: "Đã có lỗi xảy ra. Vui lòng thử lại sau." });
-        // }
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/login", // URL của API
+                {
+                  phoneNumber: user.phoneNumber,  // Số điện thoại của người dùng
+                  password: user.password,        // Mật khẩu của người dùng
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json", 
+                  },
+                  withCredentials: true,  
+                }
+              );
+              
+              // Xử lý phản hồi
+              console.log(response.data);
+              
+            // console.log(user.phoneNumber);
+            // console.log(user.password);
+            console.log(response.data.success);
+            console.log(response.data);
+            
+            if (response.data.success) {
+                if (response.data.role === "admin") {
+                    // Lưu token vào localStorage
+                    localStorage.setItem("authToken", response.data.token); 
+
+                    // Cập nhật role vào localStorage 
+                    localStorage.setItem("role", response.data.role);
+                    
+                    window.location.href = "/admin"; // Chuyển hướng đến trang admin
+                } else {
+                    window.location.href = "/"; // Chuyển hướng đến trang chủ
+                }
+            } else {
+                const newErrors = { ...errors };
+                if (response.data.message === "User not found") {
+                    newErrors.phonenumber = "Số điện thoại chưa được đăng ký!";
+                }
+                if (response.data.message === "Invalid password") {
+                    newErrors.password = "Mật khẩu không chính xác!";
+                }
+                setErrors(newErrors);
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+            setErrors({ apiError: "Đã có lỗi xảy ra. Vui lòng thử lại sau." });
+        }
     };
 
     return (
@@ -92,7 +118,7 @@ export default function LoginPage() {
 
                     <button className="button" type="submit">Đăng nhập</button>
                 </form>
-
+                {errors.apiError && <div className="error">{errors.apiError}</div>} {/* Hiển thị lỗi từ API */}
             </div>
         </div>
     );

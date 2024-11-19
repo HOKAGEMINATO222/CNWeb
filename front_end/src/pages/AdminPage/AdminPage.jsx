@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { UserOutlined, ProductOutlined, BellOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Flex, Menu } from "antd";
 import AdminUser from "../../componet/AdminUser/AdminUser";
-// import AdminProduct from "../../componet/AdminProduct/AdminProduct";
+import AdminProduct from "../../componet/AdminProduct/AdminProduct";
 import boxImage from "./box.png";
-// import AdminOrder from "../../componet/AdminOrder/AdminOrder";
+import AdminOrder from "../../componet/AdminOrder/AdminOrder";
 import styles from "./AdminPage.module.css";
 // import useSignalR from "../../components/useSignalR/useSignalR";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +35,8 @@ const items = [
 const Admin = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
-    // if (role !== "admin") window.location.href = "/";
+
+    if (role !== "admin") window.location.href = "/";
 
   });
   const [visible, setVisible] = useState(false);
@@ -65,10 +66,10 @@ const Admin = () => {
     switch (key) {
       case "users":
         return <AdminUser />;
-      // case "products":
-      //   return <AdminProduct />;
-      // case "orders":
-      //   return <AdminOrder />;
+      case "products":
+        return <AdminProduct />;
+      case "orders":
+        return <AdminOrder />;
       default:
         return <></>;
     }
@@ -117,7 +118,11 @@ const Admin = () => {
             onClick={handleOnClick}
           />
         </div>
-        <div className={styles.content}>{renderPage(keySelected)}</div>
+        <div className={styles.content}>
+          <div style={{ height: 'calc(100vh - 120px - 40px)', overflowY: 'auto' }}>
+            {renderPage(keySelected)}
+          </div>
+        </div>
       </div>
     </>
   );

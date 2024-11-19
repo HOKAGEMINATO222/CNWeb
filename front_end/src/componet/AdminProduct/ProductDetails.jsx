@@ -26,23 +26,32 @@ const CustomRow = ({ label, value }) => (
 const formatPrice = (price) => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
-const getSoLuong = (product) => {
-  return product.variants.reduce(
-    (total, variant) => total + variant.quantity,
-    0
-  );
-};
+const getSoLuong = (products) => {
+  return products.variants?.reduce(
+    (total, variant) => total + variant.quantity, 0) || 0;  // Nếu không có variants thì trả về 0
+}; 
 
-const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
-  var options = product.variants.map((variant) => ({
-    label: variant.color,
-    value: variant,
-  }));
-  const [variant, setVariant] = useState(options[0].value || null);
+const ProductDetails = ({ products, setModalChild, handleRefresh }) => {
+  const options = products?.variants?.map((variant) => ({
+    label: variant.color,     
+    value: variant._id,           
+    image: variant.image,        
+    sale: variant.sale,           
+    quantity: variant.quantity
+  })) || [];  
+  
+  const [variant, setVariant] = useState(options[0] || null); 
+  
 
-  const onChange = ({ target: { value } }) => {
-    setVariant(value);
+  const onChange = (e) => {
+    const selectedVariant = options.find((option) => option.value === e.target.value);
+    setVariant(selectedVariant);  
   };
+  
+  
+  if (!products || !products.variants) {
+    return <div>Đang tải...</div>;  
+  }
 
   return (
     <div style={{ width: 1000 }}>
@@ -64,7 +73,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
               overflowWrap: "break-word",
             }}
           >
-            {product.tenHangHoa}
+            {products.name}
           </span>
 
           <Row gutter={[16, 16]} style={{ marginBottom: 10 }}>
@@ -76,7 +85,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
                   fontSize: 16,
                 }}
               >
-                {product.ratings}
+                {products.rating}
               </span>
               <ConfigProvider
                 theme={{
@@ -87,7 +96,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
               >
                 <Rate
                   allowHalf
-                  defaultValue={product.ratings}
+                  defaultValue={products.rating}
                   disabled
                   style={{ fontSize: 14, marginLeft: 5, color: "#d0011b" }}
                 />
@@ -108,32 +117,47 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
                   marginRight: 5,
                 }}
               >
-                {product.star1 +
-                  product.star2 +
-                  product.star3 +
-                  product.star4 +
-                  product.star5}
+                {products.star1 +
+                  products.star2 +
+                  products.star3 +
+                  products.star4 +
+                  products.star5}
               </span>
-              <span>Đánh giá</span>
+              <span>Đánh giá {products.star1}</span>
+              
             </Col>
           </Row>
 
-          <CustomRow label="Mã hàng hóa" value={product.maHangHoa} />
-          <CustomRow label="Loại hàng hóa" value={product.loaiHangHoa} />
-          <CustomRow label="Hãng sản xuất" value={product.hangSanXuat[0]} />
-          <CustomRow label="Tổng số lượng" value={getSoLuong(product)} />
-          <CustomRow
-            label="Màu"
-            value={
-              <Radio.Group
-                options={options}
-                onChange={onChange}
-                value={variant}
-                optionType="button"
-              />
-            }
-          />
-
+          <CustomRow label="Mã hàng hóa" value={products._id} />
+          <CustomRow label="Loại hàng hóa" value={products.category} />
+          <CustomRow label="Hãng sản xuất" value={products.brand.name} />
+          <CustomRow label="Tổng số lượng" value={getSoLuong(products)} />
+          <CustomRow label="Màu" value={
+            <Radio.Group
+              options={options}
+              onChange={onChange}
+              value={variant?.value}
+              optionType="button"
+              buttonStyle="solid" 
+            >
+              {options.map((option, index) => (
+                <Radio.Button
+                  key={`${option.value}-${index}`}
+                  value={option.value}
+                  style={{
+                    backgroundColor: option.value,  // Hiển thị màu nền theo màu của biến thể
+                    color: '#fff',  // Màu chữ trắng trên nền
+                    borderColor: option.value,  // Để viền giống màu nền
+                    padding: '8px 16px',  // Điều chỉnh padding cho nút Radio
+                    margin: '0 8px',  // Khoảng cách giữa các nút Radio
+                  }}
+                >
+                  {option.label} - {option.sale}% Giảm giá
+                </Radio.Button>
+              ))}
+            </Radio.Group>
+          } />
+          
           <Row gutter={[16, 16]}>
             <Col span={8} style={{ fontSize: 16, color: "#929292" }}>
               Giá gốc:
@@ -143,22 +167,27 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
               style={{
                 fontSize: 18,
                 color: "#d0011b",
-                textDecoration: "line-through",
+                textDecoration: "line-through", // Hiển thị giá gốc bị gạch ngang
               }}
             >
-              ₫ {formatPrice(product.gia)}
+              {formatPrice(products.price)} VNĐ {/* Hiển thị giá gốc */}
             </Col>
           </Row>
+
+          <CustomRow label="Giảm giá" value={`${variant.sale}%`} /> {/* Hiển thị mức giảm giá */}
+
           <Row gutter={[16, 16]}>
             <Col span={8} style={{ fontSize: 16, color: "#929292" }}>
               Giá hiện tại:
             </Col>
             <Col span={16} style={{ fontSize: 18, color: "#d0011b" }}>
-              ₫ {formatPrice(product.gia * (1 - variant.sale / 100))}
+              {formatPrice(products.price * (1 - (variant.sale || 0) / 100))} VNĐ {/* Tính toán giá sau giảm */}
             </Col>
           </Row>
-          <CustomRow label="Giảm giá" value={`${variant.sale}%`} />
-          <CustomRow label="Số lượng" value={variant.quantity} />
+
+          
+          <CustomRow label="Số lượng" value={variant.quantity} /> {/* Hiển thị số lượng */}
+
 
           <div style={{ fontSize: 18, marginTop: 10 }}>Thông tin: </div>
           <Paragraph
@@ -169,7 +198,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
               marginLeft: 10,
             }}
           >
-            {product.thongTin
+            {products.description
             .map((item) => item.trim())
             .join("\n")
             }
@@ -184,7 +213,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
               marginLeft: 10,
             }}
           >
-            {product.thongSo
+            {products.specifications
                .map((item) => item.trim())
                .join("\n")
             }
@@ -197,7 +226,7 @@ const ProductDetails = ({ product, setModalChild, handleRefresh }) => {
           icon={<EditOutlined />}
           onClick={() => {
             setModalChild(
-              <EditProduct product={product} setModalChild={setModalChild} handleRefresh={handleRefresh}/>
+              <EditProduct product={products} setModalChild={setModalChild} handleRefresh={handleRefresh}/>
             );
           }}
         >

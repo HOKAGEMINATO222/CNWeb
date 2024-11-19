@@ -1,0 +1,138 @@
+/* Container */
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+}
+
+/* Thanh Tìm Kiếm */
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 60%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.search-button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 200px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar-button {
+    padding: 10px;
+    font-size: 1em;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    width: 170px;
+    font-weight: bold;
+}
+
+.sidebar-button:hover {
+    background-color: #0056b3;
+}
+
+/* Main Profile Content */
+.profile-content {
+    margin-left: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Profile Main */
+.profile-main {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-top: 20px; /* Khoảng cách từ tiêu đề đến avatar */
+}
+
+/* Avatar Section */
+.avatar-section {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+}
+
+/* Profile Info */
+.profile-info {
+    flex: 1;
+    max-width: 100%;
+}
+
+.profile-info label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.profile-info p, .profile-info input {
+    margin: 5px 0 15px;
+}
+
+.profile-info input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Nút Lưu và Hủy */
+.edit-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
