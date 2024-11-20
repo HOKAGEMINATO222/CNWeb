@@ -32,6 +32,41 @@ export default function CartPage() {
             quantity: 1,
             selected: false,
         },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
+        {
+            id: 4,
+            name: "Máy tính bảng Samsung Galaxy Tab S8",
+            price: 20000000,
+            quantity: 1,
+            selected: false,
+        },
     ]);
 
     const navigate = useNavigate();
@@ -71,8 +106,7 @@ export default function CartPage() {
     );
 
     return (
-        <div className="cart-container">
-            {/* Thanh tiêu đề chứa TECH STORE và Giỏ Hàng */}
+        <div class="cart-wrapper">
             <div className="cart-header-bar">
                 <div className="header-left">
                     <Link to="/" className="tech-store-link">TECH STORE</Link>
@@ -83,56 +117,56 @@ export default function CartPage() {
                     <button className="search-button">🔍</button>
                 </div>
             </div>
-
-            {/* Danh sách sản phẩm */}
-            <div className="cart-table">
-                <div className="cart-table-header">
-                    <span></span> {/* Cột tickbox, bỏ tiêu đề */}
-                    <span>Sản Phẩm</span>
-                    <span>Đơn Giá</span>
-                    <span>Số Lượng</span>
-                    <span>Thành Tiền</span>
-                </div>
-                {cartItems.map((item) => (
-                    <div key={item.id} className="cart-item">
-                        <div className="cart-item-checkbox">
-                            <input
-                                type="checkbox"
-                                checked={item.selected}
-                                onChange={() => handleToggleSelect(item.id)}
-                            />
-                        </div>
-                        <div className="cart-item-details">
-                            <span className="cart-item-name">{item.name}</span>
-                        </div>
-                        <span className="cart-item-price">
-                            {item.price.toLocaleString()}₫
-                        </span>
-                        <div className="cart-item-quantity">
-                            <button onClick={() => handleQuantityChange(item.id, -1)} disabled={item.quantity === 1}>
-                                -
-                            </button>
-                            <span>{item.quantity}</span>
-                            <button onClick={() => handleQuantityChange(item.id, 1)}>+</button>
-                        </div>
-                        <span className="cart-item-total">
-                            {(item.price * item.quantity).toLocaleString()}₫
-                        </span>
+            <div className="cart-container">
+                <div className="cart-table">
+                    <div className="cart-table-header">
+                        <span></span>
+                        <span>Sản Phẩm</span>
+                        <span>Đơn Giá</span>
+                        <span>Số Lượng</span>
+                        <span>Thành Tiền</span>
                     </div>
-                ))}
-            </div>
-
-            {/* Nút Xóa Tất Cả */}
-            <div className="remove-all-container">
-                <button onClick={handleRemoveAll} className="remove-all-button">Xóa Tất Cả</button>
-            </div>
-
-            {/* Footer chứa Tổng thanh toán và Mua Hàng */}
-            <div className="cart-footer">
-                <div className="total-amount">
-                    <span>Tổng thanh toán ({cartItems.filter(item => item.selected).length} sản phẩm): {totalAmount.toLocaleString()}₫</span>
+                    {cartItems.map((item) => (
+                        <div key={item.id} className="cart-item">
+                            <div className="cart-item-checkbox">
+                                <input
+                                    type="checkbox"
+                                    checked={item.selected}
+                                    onChange={() => handleToggleSelect(item.id)}
+                                />
+                            </div>
+                            <div className="cart-item-details">
+                                <span className="cart-item-name">{item.name}</span>
+                            </div>
+                            <span className="cart-item-price">
+                                {item.price.toLocaleString()}₫
+                            </span>
+                            <div className="cart-item-quantity">
+                                <button onClick={() => handleQuantityChange(item.id, -1)} disabled={item.quantity === 1}>
+                                    -
+                                </button>
+                                <span>{item.quantity}</span>
+                                <button onClick={() => handleQuantityChange(item.id, 1)}>+</button>
+                            </div>
+                            <span className="cart-item-total">
+                                {(item.price * item.quantity).toLocaleString()}₫
+                            </span>
+                        </div>
+                    ))}
                 </div>
-                <button className="checkout-button" onClick={handleCheckout}>Mua Hàng</button>
+
+                {/* Nút Xóa Tất Cả */}
+                <div className="remove-all-container">
+                    <button onClick={handleRemoveAll} className="remove-all-button">Xóa Tất Cả</button>
+                </div>
+
+                {/* Footer chứa Tổng thanh toán và Mua Hàng */}
+                <div className="cart-footer">
+                    <div className="total-amount">
+                        <span>Tổng thanh toán ({cartItems.filter(item => item.selected).length} sản phẩm): {totalAmount.toLocaleString()}₫</span>
+                    </div>
+                    <button className="checkout-button" onClick={handleCheckout}>Mua Hàng</button>
+                </div>
             </div>
         </div>
     );

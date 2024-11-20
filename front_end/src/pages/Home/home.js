@@ -79,7 +79,7 @@ export default function Home({ isLoggedIn }) {
     };
 
     return (
-        <div className="home-container">
+        <div>
             <div className="top-bar">
                 <div className="search-bar">
                     <input type="text" placeholder="Tìm kiếm sản phẩm..." />
@@ -99,7 +99,6 @@ export default function Home({ isLoggedIn }) {
                     )}
                 </div>
             </div>
-
             <section className="product-categories">
                 <h2>Danh Mục Sản Phẩm</h2>
                 <div className="category-list">
@@ -114,23 +113,25 @@ export default function Home({ isLoggedIn }) {
                     ))}
                 </div>
             </section>
+            <div className="home-container">
 
-            {/* Hiển thị sản phẩm của danh mục đã chọn hoặc tất cả sản phẩm nếu không chọn danh mục */}
-            <section className="category-products">
-                <h3>Sản phẩm trong danh mục: {selectedCategory || "Tất cả sản phẩm"}</h3>
-                <div className="product-list">
-                    {(selectedCategory ? categoryData[selectedCategory] : categoryData["Tất cả sản phẩm"]).map((product) => (
-                        <Link to={`/product/${product.id}`} key={product.id} className="product-item">
-                            <img src={product.image} alt={product.name} className="product-image" />
-                            <h4 className="product-name">{product.name}</h4>
-                            <p className="product-price">
-                                {product.price} <span className="product-discount">{product.discount || ""}</span>
-                            </p>
-                            <p className="product-rating">⭐ {product.rating} | Đã bán {product.sold}</p>
-                        </Link>
-                    ))}
-                </div>
-            </section>
+
+                <section className="category-products">
+                    <h3>Sản phẩm trong danh mục: {selectedCategory || "Tất cả sản phẩm"}</h3>
+                    <div className="product-list">
+                        {(selectedCategory ? categoryData[selectedCategory] : categoryData["Tất cả sản phẩm"]).map((product) => (
+                            <Link to={`/product-detail/${product.id}`} key={product.id} className="product-item">
+                                <img src={product.image} alt={product.name} className="product-image" />
+                                <h4 className="product-name">{product.name}</h4>
+                                <p className="product-price">
+                                    {product.price} <span className="product-discount">{product.discount || ""}</span>
+                                </p>
+                                <p className="product-rating">⭐ {product.rating} | Đã bán {product.sold}</p>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            </div>
         </div>
     );
 }
