@@ -12,8 +12,11 @@ import { deleteUserAPI } from "./API";
 const AdminUser = () => {
   const [users, setUsers] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('authToken'); // Lấy token từ localStorage
     
@@ -32,6 +35,8 @@ const AdminUser = () => {
       } catch (error) {
         console.error(error);
         message.error('Không thể lấy dữ liệu người dùng');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -229,6 +234,7 @@ const AdminUser = () => {
     <div >
       <Table
         columns={columns}
+        loading={loading}
         dataSource={users ? users.map((user, index) => ({ ...user, key: user._id, stt: index + 1 })) : []}
         pagination={{
           pageSizeOptions: ['5', '10', '15'],

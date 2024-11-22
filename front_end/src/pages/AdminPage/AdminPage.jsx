@@ -5,11 +5,14 @@ import AdminUser from "../../componet/AdminUser/AdminUser";
 import AdminProduct from "../../componet/AdminProduct/AdminProduct";
 import boxImage from "./box.png";
 import AdminOrder from "../../componet/AdminOrder/AdminOrder";
+import AdminProfile from "../../componet/AdminProfile/AdminProfile";
 import styles from "./AdminPage.module.css";
 // import useSignalR from "../../components/useSignalR/useSignalR";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
+import {InfoCircleOutlined} from '@ant-design/icons';
+
 
 const logout = () => {
   console.log("User logged out");
@@ -31,6 +34,7 @@ const items = [
   getItem("Sản phẩm", "products", <ProductOutlined />),
   getItem("Người dùng", "users", <UserOutlined />),
   getItem("Đơn hàng", "orders", <img src={boxImage} alt="Order" width={14} />),
+  getItem("Thông tin", "profile", <InfoCircleOutlined />)
 ];
 const Admin = () => {
   useEffect(() => {
@@ -70,6 +74,8 @@ const Admin = () => {
         return <AdminProduct />;
       case "orders":
         return <AdminOrder />;
+      case "profile":
+        return <AdminProfile />;
       default:
         return <></>;
     }
@@ -108,7 +114,7 @@ const Admin = () => {
 
         </div>
       </header>
-      <div style={{ display: "flex", paddingTop: "60px" }}>
+      <div>
         <div className={styles.menuContainer}>
           <Menu
             mode="inline"

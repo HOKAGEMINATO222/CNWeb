@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const corsOptions = {
     origin: 'http://localhost:3000',  // Chỉ định origin của frontend
-    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT '],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,  // Cho phép gửi cookies hoặc JWT
 };

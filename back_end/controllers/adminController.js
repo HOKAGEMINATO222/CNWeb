@@ -1,6 +1,8 @@
 const User = require('../models/userModel'); 
 const Product = require('../models/productModel')
+const { validateProduct } = require('../validation/product'); 
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 
 const getAdminDashboard = (req, res) => {
@@ -10,7 +12,7 @@ const getAdminDashboard = (req, res) => {
 // Lấy tất cả user
 const manageUsers = async (req, res) => {
   try {
-    const users = await User.find(); // Sử dụng find() để lấy tất cả người dùng
+    const users = await User.find({ role: { $ne: 'admin' } }); // Sử dụng find() để lấy tất cả người dùng
     console.log('Lấy thành công tất cả người dùng!')
     res.json({ message: 'Get All Users', users });
 
@@ -18,6 +20,123 @@ const manageUsers = async (req, res) => {
     res.status(500).json({ message: 'Error managing users', error: error.message });
   }
 };
+
+// Lấy thông tin admin
+const getAdminProfile = async (req, res) => {
+  try {
+      // Sử dụng req.userId đã được gán trong middleware protect
+      const adminId = req.userId;
+
+      // Truy vấn thông tin admin trong database
+      const admin = await User.findOne({ _id: adminId, role: 'admin' });
+
+      if (!admin) {
+          return res.status(404).json({ message: "Không tìm thấy admin" });
+      }
+
+      // Trả về thông tin admin
+      res.json({
+          admin: {
+              _id: admin._id,
+              userName: admin.userName,
+              phoneNumber: admin.phoneNumber,
+              diaChi: admin.diaChi,
+              role: admin.role,
+          },
+      });
+  } catch (error) {
+      console.error("Lỗi khi lấy thông tin admin:", error);
+      res.status(500).json({ message: "Lỗi khi lấy thông tin admin", error });
+  }
+};
+
+// Đổi mật khẩu admin
+const changeAdminPassword = async (req, res) => {
+  try {
+      // Lấy dữ liệu từ request body
+      const { currentPassword, newPassword } = req.body;
+
+      // Kiểm tra mật khẩu hiện tại có đúng định dạng không
+      if (!currentPassword || currentPassword.length < 6) {
+          return res.status(400).json({ message: 'Mật khẩu hiện tại phải có ít nhất 6 ký tự' });
+      }
+
+      // Kiểm tra mật khẩu mới có đúng định dạng không
+      if (!newPassword || newPassword.length < 6) {
+          return res.status(400).json({ message: 'Mật khẩu mới phải có ít nhất 6 ký tự' });
+      }
+
+      // Kiểm tra admin có tồn tại không
+      const adminId = req.userId;
+      const admin = await User.findById(adminId);
+      if (!admin) {
+          return res.status(404).json({ message: 'Admin không tồn tại' });
+      }
+
+      // Kiểm tra mật khẩu hiện tại có đúng không
+      const isMatch = await bcrypt.compare(currentPassword, admin.password);
+      if (!isMatch) {
+          return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
+      }
+
+      // Mã hóa mật khẩu mới và lưu vào database
+      const salt = await bcrypt.genSalt(10);
+      admin.password = await bcrypt.hash(newPassword, salt);
+
+      await admin.save();
+      res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+      console.error('Lỗi khi đổi mật khẩu admin:', error);
+      res.status(500).json({ message: 'Lỗi server khi đổi mật khẩu', error: error.message });
+  }
+};
+
+// Cập nhật thông tin admin
+const updateAdminProfile = async (req, res) => {
+  try {
+      // Lấy dữ liệu từ request body
+      const { userName, phoneNumber, diaChi } = req.body;
+
+      // Kiểm tra tên người dùng có hợp lệ không
+      if (!userName || userName.trim() === '') {
+          return res.status(400).json({ message: 'Tên người dùng là bắt buộc' });
+      }
+
+      // Kiểm tra số điện thoại có hợp lệ không
+      const phoneRegex = /^\d{10,11}$/;
+      if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
+          return res.status(400).json({ message: 'Số điện thoại phải có từ 10 đến 11 chữ số' });
+      }
+
+      // Kiểm tra địa chỉ có hợp lệ không
+      if (!diaChi || diaChi.trim() === '') {
+          return res.status(400).json({ message: 'Địa chỉ là bắt buộc' });
+      }
+
+      // Kiểm tra admin có tồn tại không
+      const adminId = req.userId;
+      const admin = await User.findById(adminId);
+      if (!admin) {
+          return res.status(404).json({ message: 'Admin không tồn tại' });
+      }
+
+      // Cập nhật các trường thông tin admin
+      if (userName) admin.userName = userName;
+      if (phoneNumber) admin.phoneNumber = phoneNumber;
+      if (diaChi) admin.diaChi = diaChi;
+
+      // Lưu thông tin admin đã cập nhật
+      const updatedAdmin = await admin.save();
+      res.status(200).json({
+          message: 'Cập nhật thông tin admin thành công',
+          admin: updatedAdmin,
+      });
+  } catch (error) {
+      console.error('Lỗi khi cập nhật thông tin admin:', error);
+      res.status(500).json({ message: 'Lỗi server khi cập nhật thông tin admin', error: error.message });
+  }
+};
+
 
 // Xóa user 
 const deleteUser = async (req, res) => {
@@ -53,70 +172,41 @@ const manageProducts = async (req, res) => {
 // Tạo sản phẩm mới
 const createProduct = async (req, res) => {
   try {
-    // Lấy các trường từ request body
-    const { 
-      name, 
-      category, 
-      brand, 
-      description, 
-      specifications, 
-      price, 
-      sale, 
-      quantity, 
-      star1,
-      star2,
-      star3,
-      star4,
-      star5,
-      rating = 0,  
-      reviews = {},  
-      variants 
-    } = req.body;
+    // Lấy dữ liệu từ request body
+    const productData = req.body;
 
-    // Kiểm tra các trường bắt buộc có tồn tại không
-    
-    if (!name || !category || !brand || !description || !specifications || !price || !variants) {
-      // Log các trường thiếu thông tin
-      const missingFields = [
-        !name && 'name',
-        !category && 'category',
-        !brand && 'brand',
-        !description && 'description',
-        !specifications && 'specifications',
-        !price && 'price',
-        !sale && 'sale',
-        !quantity && 'quantity',
-        !variants && 'variants',
-      ].filter(Boolean); // Loại bỏ các giá trị false
+    // Sử dụng Joi để xác thực dữ liệu
+    const { error } = validateProduct(productData);
 
-      // Log danh sách các trường thiếu
-      console.log('Các trường thiếu thông tin:', missingFields);
+    if (error) {
+      // Nếu có lỗi xác thực, trả về thông báo lỗi với chi tiết
+      const missingFields = error.details.map(detail => detail.message);
+      console.log('Dữ liệu không hợp lệ:', missingFields);
 
       return res.status(400).json({
-        message: 'Thiếu thông tin cần thiết để tạo sản phẩm',
-        missingFields,
+        message: 'Dữ liệu sản phẩm không hợp lệ',
+        missingFields
       });
     }
 
-
-    // Tạo sản phẩm mới từ thông tin nhận được
+    // Tạo sản phẩm mới từ thông tin đã được xác thực
     const newProduct = new Product({
-      name,
-      category,
-      brand,
-      description,
-      specifications,
-      price,
-      sale,
-      quantity,
-      rating,
-      star1,
-      star2,
-      star3,
-      star4,
-      star5,
-      reviews,
-      variants
+      name: productData.name,
+      category: productData.category,
+      brand: productData.brand,
+      description: productData.description,
+      specifications: productData.specifications,
+      price: productData.price,
+      sale: productData.sale || 0,
+      quantity: productData.quantity || 0,
+      rating: productData.rating || 0,
+      star1: productData.star1 || 0,
+      star2: productData.star2 || 0,
+      star3: productData.star3 || 0,
+      star4: productData.star4 || 0,
+      star5: productData.star5 || 0,
+      reviews: productData.reviews || {},
+      variants: productData.variants,
     });
 
     // Lưu sản phẩm vào cơ sở dữ liệu
@@ -125,10 +215,11 @@ const createProduct = async (req, res) => {
     console.log('Tạo sản phẩm thành công!', savedProduct);
     res.status(201).json({ message: 'Tạo sản phẩm thành công', product: savedProduct });
   } catch (error) {
-    console.error(error);
+    console.error('Lỗi hệ thống:', error);
     res.status(500).json({ message: 'Lỗi khi tạo sản phẩm', error: error.message });
   }
 };
+
 
 // Xóa sản phẩm
 const deleteProduct = async (req, res) => {
@@ -173,4 +264,4 @@ const updateProduct = async (req, res) => {
 };
 
 
-module.exports = { getAdminDashboard, manageUsers, manageProducts, deleteUser, createProduct, deleteProduct, updateProduct };
+module.exports = { getAdminDashboard, getAdminProfile, updateAdminProfile, changeAdminPassword, manageUsers, manageProducts, deleteUser, createProduct, deleteProduct, updateProduct };

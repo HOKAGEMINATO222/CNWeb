@@ -16,8 +16,11 @@ const AdminProduct = () => {
   const [products, setProducts] = useState([]);
   const [modalChild, setModalChild] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await getProductsAPI();
         console.log("Products data fetched:", response);  // Kiểm tra dữ liệu lấy được từ API
@@ -33,9 +36,10 @@ const AdminProduct = () => {
         console.error("Error fetching products:", error);
         message.error('Không thể lấy dữ liệu sản phẩm');
         setProducts([]); 
+      } finally {
+         setLoading(false);
       }
     };
-
     fetchData();
   }, [refresh]);
   const onRefresh = () => {
@@ -289,6 +293,8 @@ const AdminProduct = () => {
         }}
         columns={columns}
         dataSource={products}
+        rowKey="_id"
+        loading={loading}
         pagination={{
           pageSizeOptions: ['5', '10', '15'], 
           showSizeChanger: true, 

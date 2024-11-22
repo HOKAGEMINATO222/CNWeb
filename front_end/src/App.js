@@ -20,7 +20,6 @@ function App() {
       <CartProvider>
        
         <BrowserRouter>
-          <Header /> {/* Hiển thị tiêu đề "Chào mừng đến TECH STORE" ở mọi trang */}
           <Routes>
             <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
             <Route path="/login" element={<Login />} />
