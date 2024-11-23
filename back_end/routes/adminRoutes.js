@@ -11,7 +11,9 @@ const {
   deleteUser,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  getAllOrders,
+  updateOrderStatus
 } = require('../controllers/adminController');
 
 // Lấy thông tin tổng quan admin
@@ -36,5 +38,8 @@ router.post('/products', protect, isAdmin, createProduct);
 router.delete('/products/:id', protect, isAdmin, deleteProduct);
 router.patch('/products/:id', protect, isAdmin, updateProduct);
 
+//Quản lý đơn hàng
+router.get('/order', protect, isAdmin, getAllOrders);
+router.put('/order/update-status', protect, isAdmin, updateOrderStatus);
 
 module.exports = router;

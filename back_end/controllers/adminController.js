@@ -1,8 +1,10 @@
 const User = require('../models/userModel'); 
 const Product = require('../models/productModel')
+const Order = require('../models/orderModel')
 const { validateProduct } = require('../validation/product'); 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+
 
 
 const getAdminDashboard = (req, res) => {
@@ -12,12 +14,29 @@ const getAdminDashboard = (req, res) => {
 // Lấy tất cả user
 const manageUsers = async (req, res) => {
   try {
-    const users = await User.find({ role: { $ne: 'admin' } }); // Sử dụng find() để lấy tất cả người dùng
+    const users = await User.find({ role: { $ne: 'admin' } }); 
     console.log('Lấy thành công tất cả người dùng!')
     res.json({ message: 'Get All Users', users });
 
   } catch (error) {
     res.status(500).json({ message: 'Error managing users', error: error.message });
+  }
+};
+
+// Xóa user 
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User không tồn tại' });
+    }
+    console.log('Xóa thành công user: ', userId)
+    res.status(200).json({ message: 'Xóa user thành công', user: deletedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Lỗi server khi xóa user', error: error.message });
   }
 };
 
@@ -47,47 +66,6 @@ const getAdminProfile = async (req, res) => {
   } catch (error) {
       console.error("Lỗi khi lấy thông tin admin:", error);
       res.status(500).json({ message: "Lỗi khi lấy thông tin admin", error });
-  }
-};
-
-// Đổi mật khẩu admin
-const changeAdminPassword = async (req, res) => {
-  try {
-      // Lấy dữ liệu từ request body
-      const { currentPassword, newPassword } = req.body;
-
-      // Kiểm tra mật khẩu hiện tại có đúng định dạng không
-      if (!currentPassword || currentPassword.length < 6) {
-          return res.status(400).json({ message: 'Mật khẩu hiện tại phải có ít nhất 6 ký tự' });
-      }
-
-      // Kiểm tra mật khẩu mới có đúng định dạng không
-      if (!newPassword || newPassword.length < 6) {
-          return res.status(400).json({ message: 'Mật khẩu mới phải có ít nhất 6 ký tự' });
-      }
-
-      // Kiểm tra admin có tồn tại không
-      const adminId = req.userId;
-      const admin = await User.findById(adminId);
-      if (!admin) {
-          return res.status(404).json({ message: 'Admin không tồn tại' });
-      }
-
-      // Kiểm tra mật khẩu hiện tại có đúng không
-      const isMatch = await bcrypt.compare(currentPassword, admin.password);
-      if (!isMatch) {
-          return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
-      }
-
-      // Mã hóa mật khẩu mới và lưu vào database
-      const salt = await bcrypt.genSalt(10);
-      admin.password = await bcrypt.hash(newPassword, salt);
-
-      await admin.save();
-      res.status(200).json({ message: 'Đổi mật khẩu thành công' });
-  } catch (error) {
-      console.error('Lỗi khi đổi mật khẩu admin:', error);
-      res.status(500).json({ message: 'Lỗi server khi đổi mật khẩu', error: error.message });
   }
 };
 
@@ -137,21 +115,44 @@ const updateAdminProfile = async (req, res) => {
   }
 };
 
-
-// Xóa user 
-const deleteUser = async (req, res) => {
+// Đổi mật khẩu admin
+const changeAdminPassword = async (req, res) => {
   try {
-    const userId = req.params.id;
-    const deletedUser = await User.findByIdAndDelete(userId);
+      // Lấy dữ liệu từ request body
+      const { currentPassword, newPassword } = req.body;
 
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'User không tồn tại' });
-    }
-    console.log('Xóa thành công user: ', userId)
-    res.status(200).json({ message: 'Xóa user thành công', user: deletedUser });
+      // Kiểm tra mật khẩu hiện tại có đúng định dạng không
+      if (!currentPassword || currentPassword.length < 6) {
+          return res.status(400).json({ message: 'Mật khẩu hiện tại phải có ít nhất 6 ký tự' });
+      }
+
+      // Kiểm tra mật khẩu mới có đúng định dạng không
+      if (!newPassword || newPassword.length < 6) {
+          return res.status(400).json({ message: 'Mật khẩu mới phải có ít nhất 6 ký tự' });
+      }
+
+      // Kiểm tra admin có tồn tại không
+      const adminId = req.userId;
+      const admin = await User.findById(adminId);
+      if (!admin) {
+          return res.status(404).json({ message: 'Admin không tồn tại' });
+      }
+
+      // Kiểm tra mật khẩu hiện tại có đúng không
+      const isMatch = await bcrypt.compare(currentPassword, admin.password);
+      if (!isMatch) {
+          return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
+      }
+
+      // Mã hóa mật khẩu mới và lưu vào database
+      const salt = await bcrypt.genSalt(10);
+      admin.password = await bcrypt.hash(newPassword, salt);
+
+      await admin.save();
+      res.status(200).json({ message: 'Đổi mật khẩu thành công' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Lỗi server khi xóa user', error: error.message });
+      console.error('Lỗi khi đổi mật khẩu admin:', error);
+      res.status(500).json({ message: 'Lỗi server khi đổi mật khẩu', error: error.message });
   }
 };
 
@@ -220,7 +221,6 @@ const createProduct = async (req, res) => {
   }
 };
 
-
 // Xóa sản phẩm
 const deleteProduct = async (req, res) => {
   try {
@@ -236,7 +236,6 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa sản phẩm', error });
   }
 };
-
 
 // Chỉnh sửa sản phẩm
 const updateProduct = async (req, res) => {
@@ -263,5 +262,59 @@ const updateProduct = async (req, res) => {
   }
 };
 
+// Lấy tất cả đơn hàng
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('userId')  // Lấy thông tin người dùng từ model User
+      .populate('items.productId')  // Lấy thông tin sản phẩm từ model Product
+      .exec();
 
-module.exports = { getAdminDashboard, getAdminProfile, updateAdminProfile, changeAdminPassword, manageUsers, manageProducts, deleteUser, createProduct, deleteProduct, updateProduct };
+    if (!orders) {
+      return res.status(404).json({ message: 'No orders found' });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching orders' });
+  }
+};
+
+// Chỉnh sửa trạng thái đơn hàng
+const updateOrderStatus = async (req, res) => {
+  const { orderId, newStatus } = req.body;
+
+  try {
+    // Kiểm tra dữ liệu đầu vào
+    if (!orderId || !newStatus) {
+      return res.status(400).json({ message: 'Missing orderId or newStatus' });
+    }
+
+    // Kiểm tra xem trạng thái mới có hợp lệ không
+    const validStatuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId, 
+      { orderStatus: newStatus }, 
+      { new: true } // Trả về document sau khi đã cập nhật
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ message: 'Error updating order status' });
+  }
+};
+
+
+
+module.exports = { getAdminDashboard, getAdminProfile, updateAdminProfile, changeAdminPassword, manageUsers, manageProducts, deleteUser, createProduct, deleteProduct, updateProduct, getAllOrders, updateOrderStatus };
