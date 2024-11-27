@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import "./Login.css";
 import { Link } from "react-router-dom";
-// import AllApi from "../../api/api";
+import apiService from "../../api/api";
 // import { AuthContext } from "../../components/AuthContext/AuthContext";
 
 export default function LoginPage() {
@@ -44,22 +44,7 @@ export default function LoginPage() {
         };
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/login", // URL của API
-                {
-                  phoneNumber: user.phoneNumber,  // Số điện thoại của người dùng
-                  password: user.password,        // Mật khẩu của người dùng
-                },
-                {
-                  headers: {
-                    "Content-Type": "application/json", 
-                  },
-                  withCredentials: true,  
-                }
-              );
-              
-              // Xử lý phản hồi
-              console.log(response.data);
+            const response = await apiService.loginUser(user)
               
             // console.log(user.phoneNumber);
             // console.log(user.password);

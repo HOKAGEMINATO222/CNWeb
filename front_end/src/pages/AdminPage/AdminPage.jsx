@@ -12,6 +12,7 @@ import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
 import {InfoCircleOutlined} from '@ant-design/icons';
+import apiService from "../../api/api";
 
 
 const logout = () => {

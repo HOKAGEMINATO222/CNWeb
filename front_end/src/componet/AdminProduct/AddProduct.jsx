@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { addProductAPI } from "./API";
+import apiService from "../../api/api";
 
 const AddProduct = ({ setModalChild, handleRefresh }) => {
   const [variants, setVariants] = useState([]);
@@ -78,7 +78,7 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
       console.log("Data to send:", data);
   
       // Gọi API để thêm sản phẩm mới
-      await addProductAPI(data);
+      await apiService.createProduct(data);
       message.success("Sản phẩm được thêm thành công!");
       handleRefresh();
       setModalChild(null);

@@ -9,7 +9,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import AddProduct from "./AddProduct";
 import ProductDetails from "./ProductDetails";
-import { deleteProductAPI, getProductsAPI } from "./API";
+import apiService from "../../api/api";
 
 const AdminProduct = () => {
   const [refresh, setRefresh] = useState(false);
@@ -22,9 +22,8 @@ const AdminProduct = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await getProductsAPI();
-        console.log("Products data fetched:", response);  // Kiểm tra dữ liệu lấy được từ API
-        const rawData = response?.products || []; 
+        const response = await apiService.getAllProducts();
+        const rawData = response.data.products || []; 
         if (Array.isArray(rawData)) {
           setProducts(rawData); // Cập nhật state sản phẩm
         } else {
@@ -145,7 +144,7 @@ const AdminProduct = () => {
   const deleteProduct = async (record) => {
     try {
       console.log('Record:', record);
-      await deleteProductAPI(record._id); 
+      await apiService.deleteProduct(record._id); 
       const updatedProducts = products.filter(
         (product) => product._id !== record._id
       );

@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { updateProductAPI } from "./API"; // Giả sử bạn có một hàm API để cập nhật sản phẩm
+import apiService from "../../api/api";
 import ProductDetails from "./ProductDetails";
 
 const EditProduct = ({ product, setModalChild, handleRefresh }) => {
@@ -79,10 +79,18 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
           image: variant.image || "",
         });
       });
+      console.log(product)
+      // Kiểm tra xem có sự thay đổi nào không
+      const isProductChanged = JSON.stringify(data) !== JSON.stringify(product);
+      const areVariantsChanged = JSON.stringify(data.variants) !== JSON.stringify(product.variants);
 
-      
+      if (!isProductChanged && !areVariantsChanged) {
+        console.log("not thing to change")
+        message.info("Không có thay đổi nào để cập nhật.");
+        return; // Không gửi đi nếu không có thay đổi
+      }
 
-      await updateProductAPI(product._id, data);
+      await apiService.updateProduct(product._id, data);
       message.success("Sản phẩm được cập nhật thành công!");
       handleRefresh();      
       setModalChild(null);
@@ -94,11 +102,12 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
   return (
     <div style={{ width: 1200 }}>
       <h2 style={{ marginTop: 0, marginBottom: 10, textAlign: "center", fontSize: "24px" }}>Chỉnh sửa Sản Phẩm</h2>
+      
       <Form
         name="chinhSuaSanPham"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
-        initialValues={{ ...product, thongTin: product.description.join('\n'), thongSo: product.specifications.join('\n') }}
+        initialValues={{ ...product, description: product.description.join('\n'), specifications: product.specifications.join('\n') }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"

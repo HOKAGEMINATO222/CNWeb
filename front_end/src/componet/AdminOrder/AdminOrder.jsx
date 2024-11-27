@@ -4,6 +4,7 @@ import { SearchOutlined, DeleteFilled, ExclamationCircleFilled } from "@ant-desi
 import Highlighter from "react-highlight-words";
 import OrderDetails from "./OrderDetails";
 import axios from 'axios';  // Import axios for API requests
+import apiService from '../../api/api.js'
 
 // Helper function to format date
 function formatDate(isoString) {
@@ -35,12 +36,7 @@ const AdminOrder = () => {
           return;
         }
         // Gửi yêu cầu API với Authorization header
-        const response = await axios.get( `http://localhost:5000/admin/order`, {
-          headers: {
-            Authorization: `Bearer ${token}`,  // Thêm token vào header
-          },
-        });
-        
+        const response = await apiService.getAllOrders();
         // Map the order data for table display
         const ordersData = response.data.map(order => ({
           maDonHang: order._id,
@@ -73,7 +69,7 @@ const AdminOrder = () => {
 
   const deleteOrder = async (record) => {
     try {
-      await axios.delete(`/api/orders/${record.maDonHang}`);  // Delete order by ID
+      await apiService.deleteOrder(record._id)
 
       const updatedOrders = orders.filter(order => order.maDonHang !== record.maDonHang);
       setOrders(updatedOrders);

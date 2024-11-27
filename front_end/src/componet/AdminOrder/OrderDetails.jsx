@@ -18,6 +18,7 @@ import {
 } from "antd";
 
 import React, { useState, useEffect } from 'react';
+import apiService from "../../api/api";
 
 
 const formatCurrency = (value) => {
@@ -170,31 +171,24 @@ const OrderDetails = ({ order, handleRefresh }) => {
     // Hàm để thay đổi trạng thái giao hàng
   const handleChangeDeliveryStatus = async (orderId, status) => {
     try {
-      // Lấy token từ localStorage hoặc cookie
-      const token = localStorage.getItem('authToken'); 
-      const response = await fetch('http://localhost:5000/admin/order/update-status', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ orderId, newStatus }),
-      });
-  
-      const data = await response.json();
+      const response = await apiService.updateOrderAdmin(orderId, status);
       
-      if (response.ok) {
+      if (response.status === 200) {
         message.success('Trạng thái đơn hàng đã được cập nhật');
-        console.log('Order status updated:', data.order);
+        console.log('Order status updated:', response.data.order);
+  
+        // Cập nhật trạng thái trong state nếu cần
         setOrderStatus(status); 
-        handleRefresh(); 
+        handleRefresh(); // Làm mới dữ liệu
       } else {
-        console.error('Error updating order status:', data.message);
-        message.error('Có lỗi xảy ra khi cập nhật trạng thái');
+        // Xử lý trường hợp API không trả về status 200
+        console.error('Error updating order status:', response.data?.message || 'Lỗi không xác định');
+        message.error(response.data?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
       }
     } catch (error) {
+      // Xử lý lỗi kết nối hoặc lỗi không xác định
       console.error('Error:', error);
-      message.error('Lỗi kết nối');
+      message.error('Lỗi kết nối hoặc xử lý yêu cầu');
     }
   };
 

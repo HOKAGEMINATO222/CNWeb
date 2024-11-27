@@ -32,6 +32,7 @@ const getSoLuong = (products) => {
 }; 
 
 const ProductDetails = ({ products, setModalChild, handleRefresh }) => {
+
   const options = products?.variants?.map((variant) => ({
     label: variant.color,     
     value: variant._id,           

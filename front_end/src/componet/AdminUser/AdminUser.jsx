@@ -7,7 +7,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
-import { deleteUserAPI } from "./API";
+import apiService from "../../api/api";
 
 const AdminUser = () => {
   const [users, setUsers] = useState(null);
@@ -25,11 +25,7 @@ const AdminUser = () => {
           return; // Nếu không có token, dừng lại và không gọi API
         }
     
-        const response = await axios.get('http://localhost:5000/admin/users', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Thêm token vào header của request
-          },
-        });
+        const response = await apiService.getAllUsers();
         const usersData = response.data.users;
         setUsers(usersData);
       } catch (error) {
@@ -141,7 +137,7 @@ const AdminUser = () => {
 
   const deleteUser = async (record) => {
     try {
-      await deleteUserAPI(record._id);
+      await apiService.deleteUser(record._id);
 
       const updatedUsers = users.filter(
         (user) => user._id !== record._id

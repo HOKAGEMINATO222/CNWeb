@@ -3,6 +3,7 @@ import addressData from './address-data.json';
 import { Link } from "react-router-dom";
 import axios from "axios"; // Import axios
 import "./RegisterAccount.css";
+import apiService from "../../api/api";
 
 export default function RegisterPage() {
     const [phonenumber, setPhonenumber] = useState("");
@@ -110,7 +111,7 @@ export default function RegisterPage() {
 
     const addUser = async (newUser) => {
         try {
-            const response = await axios.post("http://localhost:5000/register", newUser); 
+            const response = await apiService.registerUser(newUser);
            
             if (response.data.success) {
                 return response.data.user;
