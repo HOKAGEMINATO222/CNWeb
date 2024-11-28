@@ -19,15 +19,6 @@ export default function Home({ isLoggedIn }) {
                 rating: 4.8,
                 sold: "60,1k"
             },
-            // {
-            //     image: "path/to/image2.jpg",
-            //     name: "Kệ giá đỡ điện thoại",
-            //     price: "1.000₫",
-            //     discount: "20%",
-            //     rating: 4.7,
-            //     sold: "77k"
-            // },
-            // Thêm các sản phẩm khác
         ],
         "Điện Thoại": [ /* Dữ liệu các sản phẩm khác */ ],
         "Laptop": [ /* Dữ liệu các sản phẩm khác */ ],

@@ -135,7 +135,7 @@
 html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Ẩn scrollbar tổng thể */
+  overflow: auto; /* Ẩn scrollbar tổng thể */
 }
 
 #root {
