@@ -1,10 +1,10 @@
 import './App.css';
-import Home from "./pages/Home/home";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login/index";
 import RegisterPage from './pages/RegisterAccount';
 import ProfilePage from "./pages/Profile/ProfilePage";
 import CartPage from './pages/Cart/CartPage';
-import Header from "./components/Header";
+
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
 import ProductDetail from "./pages/Product/ProductDetail";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import một lần
@@ -20,7 +20,7 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Header />
+        
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home isLoggedIn={!isLoggedIn} />} />

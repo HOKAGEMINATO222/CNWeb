@@ -3,18 +3,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     color: #333;
+    
     line-height: 1.6;
 }
 
 .checkout-header-bar {
-    top: 60px;
-    width: 90vw;
+    top: 0px;
+    width: 100vw;
     background-color: #f0f0f0;
     position: fixed;
     display: flex;
@@ -69,7 +71,8 @@ body {
 
 
 .checkout-container {
-    width: 90vw;
+    width: 100vw;
+    height: min-content;
     top: 60px;
     position: relative;
     margin: 20px auto;
