@@ -72,8 +72,7 @@ body {
 
 .checkout-container {
     width: 100vw;
-    height: min-content;
-    top: 60px;
+    top: 0px;
     position: relative;
     margin: 20px auto;
     padding: 20px;

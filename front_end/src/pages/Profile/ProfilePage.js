@@ -114,8 +114,7 @@ export default function ProfilePage() {
                                 <label>Giới tính</label>
                                 <p>{profile.gender}</p>
 
-                                <label>Ngày sinh</label>
-                                <p>{profile.birthdate}</p>
+                                
                             </div>
                         </>
                     )}
@@ -162,13 +161,7 @@ export default function ProfilePage() {
                                     <option value="Khác">Khác</option>
                                 </select>
 
-                                <label style={{ paddingTop: '10px' }}>Ngày sinh</label>
-                                <input
-                                    type="date"
-                                    name="birthdate"
-                                    value={profile.birthdate}
-                                    onChange={handleInputChange}
-                                />
+                                
                             </div>
                             <div className="edit-buttons">
                                 <button className="save-button" onClick={saveProfile}>
