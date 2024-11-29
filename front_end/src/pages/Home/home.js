@@ -1,13 +1,26 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-// import Header from "../../components/Header"; // Import Header
+import { Link, useNavigate } from "react-router-dom"; // Thêm useNavigate
 import "./home.css";
 
 export default function Home({ isLoggedIn }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const navigate = useNavigate(); // Khởi tạo navigate
+
+    // Đối tượng ánh xạ danh mục với đường dẫn
+    const categoryPaths = {
+        "Điện Thoại": "/phone",
+        "Laptop": "/laptop",
+        "Phụ kiện": "/accessories",
+        "Tai nghe": "/headphones",
+        "Dây sạc": "/cables",
+    };
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
+
+        // Điều hướng đến URL tương ứng
+        const path = categoryPaths[category] || "/"; // Nếu không có, điều hướng về trang chủ
+        navigate(path);
     };
 
     const categoryData = {
@@ -19,26 +32,18 @@ export default function Home({ isLoggedIn }) {
                 rating: 4.8,
                 sold: "60,1k"
             },
-            // {
-            //     image: "path/to/image2.jpg",
-            //     name: "Kệ giá đỡ điện thoại",
-            //     price: "1.000₫",
-            //     discount: "20%",
-            //     rating: 4.7,
-            //     sold: "77k"
-            // },
-            // Thêm các sản phẩm khác
+            // Các sản phẩm khác
         ],
-        "Điện Thoại": [ /* Dữ liệu các sản phẩm khác */ ],
-        "Laptop": [ /* Dữ liệu các sản phẩm khác */ ],
-        "Phụ Kiện": [ /* Dữ liệu các sản phẩm khác */ ],
-        "Tai Nghe": [ /* Dữ liệu các sản phẩm khác */ ],
-        "Dây Sạc": [ /* Dữ liệu các sản phẩm khác */ ],
+        "Điện Thoại": [ /* Dữ liệu các sản phẩm điện thoại */],
+        "Laptop": [ /* Dữ liệu các sản phẩm laptop */],
+        "Phụ kiện": [ /* Dữ liệu các sản phẩm phụ kiện */],
+        "Tai nghe": [ /* Dữ liệu các sản phẩm tai nghe */],
+        "Dây sạc": [ /* Dữ liệu các sản phẩm dây sạc */],
     };
 
     return (
         <div className="home-container">
-            
+
             <div className="top-bar">
                 <div className="search-bar">
                     <input type="text" placeholder="Tìm kiếm sản phẩm..." />

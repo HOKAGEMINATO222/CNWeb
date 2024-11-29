@@ -10,7 +10,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Chỉ import
 import { publicRoutes } from './routes';
 import { CartProvider } from './components/CartContext/CartContext';
 import { AuthProvider } from './components/AuthContext/AuthContext';
-
+import Accessory from './pages/Home/Accessory';
+import Phone from './pages/Home/Phone';
+import Laptop from './pages/Home/Laptop';
+import Headphone from './pages/Home/Headphone';
+import Cable from './pages/Home/Cable';
 
 function App() {
   const isLoggedIn = localStorage.getItem("role"); // Kiểm tra trạng thái đăng nhập
@@ -18,10 +22,17 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-       
+
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
+            <Route path="/" element={<Home />}>
+              <Route path="/" element={<Home isLoggedIn={!!isLoggedIn} />} />
+              <Route path="/phone" element={<Phone />} />
+              <Route path="/laptop" element={<Laptop />} />
+              <Route path="/accessories" elemenent={<Accessory />} />
+              <Route path="/headphones" element={<Headphone />} />
+              <Route path="/cables" elemenent={<Cable />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
             {/* Route cho trang giỏ hàng */}

@@ -11,7 +11,7 @@ import styles from "./AdminPage.module.css";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
-import {InfoCircleOutlined} from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import apiService from "../../api/api";
 
 
