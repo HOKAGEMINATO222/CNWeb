@@ -1,23 +1,261 @@
-/* Container */
-.profile-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0px;
+body {
     font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
 }
 
-/* Thanh Tìm Kiếm */
-.search-bar {
+.profile-container {
+    display: flex;
+    position: relative;
+    top: 30px;
+    width: 70vw;
+    height: 85vh;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Cột bên trái */
+.left-column {
+    flex: 1;
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+.left-column h3 {
+    margin-bottom: 10px;
+}
+
+.left-column ul li {
+    padding: 10px 0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.left-column ul li:hover {
+    background-color: #f0f0f0;
+}
+
+.password-section input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Cột giữa */
+.middle-column {
+    flex: 2;
+    padding: 20px;
+}
+
+.middle-column h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.profile-info label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.profile-info p {
+    margin: 0 0 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.profile-info input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.edit-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.save-button {
+    background-color: #28a745;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+}
+
+
+.right-column {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    border-left: 1px solid #ddd;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit:cover;
+    margin-bottom: 15px;
+}
+
+.choose-image-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    align-items: center;
+}
+
+.logout-modal {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
 }
 
-.search-bar input {
-    width: 60%;
+.logout-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logout-modal-content p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.confirm-button,
+.cancel-button {
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.confirm-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Định dạng chung cho input, select và các thành phần liên quan */
+.profile-info input,
+.profile-info select {
+    width: 100%; /* Đảm bảo input chiếm toàn bộ chiều rộng của khung chứa */
+    max-width: 400px; /* Giới hạn chiều rộng tối đa */
+    padding: 10px; /* Khoảng cách bên trong */
+    margin-bottom: 15px; /* Khoảng cách giữa các input */
+    border: 1px solid #ddd; /* Đường viền */
+    border-radius: 5px; /* Góc bo tròn */
+    box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng đến chiều rộng tổng thể */
+    font-size: 14px; /* Kích thước chữ */
+}
+
+/* Đảm bảo nhãn và input đồng đều */
+.profile-info label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.profile-info p {
+    margin: 0 0 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+
+.pro5-header-bar {
+    position: fixed;
+    width: 70vw;
+    background-color: #f0f0f0;
+    top: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.pro5-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tech-store-link {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+    margin-left: 20px;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input {
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 250px;
+    box-sizing: border-box;
 }
 
 .search-button {
@@ -25,114 +263,8 @@
     border: none;
     background-color: #007bff;
     color: white;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-}
-
-/* Sidebar */
-.sidebar {
-    position: fixed;
-    top: 200px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.sidebar-button {
-    padding: 10px;
-    font-size: 1em;
-    color: white;
-    background-color: #007bff;
-    border: none;
+    font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
-    text-align: center;
-    width: 170px;
-    font-weight: bold;
-}
-
-.sidebar-button:hover {
-    background-color: #0056b3;
-}
-
-/* Main Profile Content */
-.profile-content {
-    margin-left: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Profile Main */
-.profile-main {
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-    margin-top: 20px; /* Khoảng cách từ tiêu đề đến avatar */
-}
-
-/* Avatar Section */
-.avatar-section {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #007bff;
-}
-
-/* Profile Info */
-.profile-info {
-    flex: 1;
-    max-width: 100%;
-}
-
-.profile-info label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-}
-
-.profile-info p, .profile-info input {
-    margin: 5px 0 15px;
-}
-
-.profile-info input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* Nút Lưu và Hủy */
-.edit-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.save-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.cancel-button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-right: 20px;
 }

@@ -2,8 +2,9 @@
 
 .home-container {
     width: 100vw;
+    height: auto;
     background-color: #f8f9fa;
-    padding: 0;
+    padding-top: 20px;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -26,11 +27,14 @@
   }
   
   .top-bar {
+    position: fixed;
+    top: 60px;
+    background-color: #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px;
+    max-width: 100vw;
     padding: 20px;
     box-sizing: border-box;
   }
@@ -82,8 +86,11 @@
   }
   
   .product-categories {
+    position: fixed;
+    background-color: #f0f0f0;
+    top: 135px;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 0px;
     width: 100%;
   }
   
