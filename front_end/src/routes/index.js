@@ -1,7 +1,7 @@
 import AdminUser from '../componet/AdminUser/AdminUser';
 import Admin from '../pages/AdminPage/AdminPage';
 import adminLayout from '../pages/AdminPage/adminLayout';
-import Category from '../pages/Category/Category';
+// import Category from '../pages/Category/Category';
 // import userLayout from '../pages/userLayout/userLayout';
 // import AdminOrder from '../componet/AdminOrder/AdminOrder';
 // import AdminProduct from '../componet/AdminProduct/AdminProduct';
