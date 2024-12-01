@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import addressData from './address-data.json';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios
 import "./RegisterAccount.css";
 import apiService from "../../api/api";
@@ -12,6 +13,7 @@ export default function RegisterPage() {
     const [rePassword, setRePassword] = useState("");
     const [diaChi, setDiaChi] = useState("");
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState("");
 
     const citisRef = useRef(null);
@@ -99,9 +101,9 @@ export default function RegisterPage() {
 
             if (savedUser) {
                 console.log('User saved successfully:', savedUser);
-                setSuccessMessage("Đăng ký thành công! Đang chuyển hướng...");
+                setSuccessMessage("Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...");
                 setTimeout(() => {
-                    window.location.reload();
+                    navigate('/login');
                 }, 2000);
             } else {
                 console.log('Đã xảy ra lỗi khi thêm người dùng.');

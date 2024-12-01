@@ -21,4 +21,25 @@ const createProduct = async (req, res) => {
   }
 };
 
-module.exports = {createProduct};
+// Route to get all products
+const getProducts = async (req, res) => {
+  try {
+    // Fetch all products from the database
+    const products = await ProductModel.find();
+
+    // Return the products in the response
+    res.status(200).json({ 
+      message: 'Products fetched successfully', 
+      products 
+    });
+  } catch (err) {
+    // Handle errors and send a response with status 500
+    res.status(500).json({ 
+      message: 'Error fetching products', 
+      error: err.message 
+    });
+  }
+};
+
+
+module.exports = {createProduct, getProducts };

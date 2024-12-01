@@ -8,25 +8,31 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         try {
-            const storedUser = JSON.parse(localStorage.getItem('user'));
-            if (storedUser) {
-                setUser(storedUser);
+            const token = localStorage.getItem('authToken');
+            if (token) {
                 setIsLoggedIn(true);
+                // Tải thông tin người dùng từ localStorage hoặc API nếu cần
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+                if (storedUser) {
+                    setUser(storedUser);
+                }
             }
         } catch (error) {
             console.error('Failed to parse user from localStorage', error);
         }
     }, []);
 
-    const login = (user) => {
+    const login = (user, token) => {
         setUser(user);
         setIsLoggedIn(true);
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('authToken', token); // Chỉ lưu token
+        localStorage.setItem('user', JSON.stringify(user)); // Lưu thông tin người dùng
     };
 
     const logout = () => {
         setUser(null);
         setIsLoggedIn(false);
+        localStorage.removeItem('authToken');
         localStorage.removeItem('user');
     };
 

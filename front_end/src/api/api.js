@@ -34,10 +34,17 @@ apiInstance.interceptors.response.use(
 
 // **API Service**
 const apiService = {
+  
   // **User APIs**
   registerUser: (newUser) => apiInstance.post("/register", newUser),
   loginUser: (user) => apiInstance.post("/login", user),
   getUserProfile: () => apiInstance.get("/profile"),
+  getProducts: () => apiInstance.get("/product"),
+  updateUserProfile: (userData) => apiInstance.put("/profile", userData), // Chỉnh sửa thông tin cá nhân
+  changePassword: (oldPassword, newPassword) => apiInstance.put("/change-password", {
+      oldPassword,
+      newPassword
+  }),
 
   // **Order APIs** 
   createOrder: (orderData) => apiInstance.post("/orders", orderData),

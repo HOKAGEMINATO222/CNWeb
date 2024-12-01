@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser } = require('../controllers/userController');
+const { registerUser, loginUser, getProfile, updateProfile, changePassword } = require('../controllers/userController');
 const authMiddleware = require('../middlewares/userMiddleware');
 
 const router = express.Router();
@@ -10,9 +10,13 @@ router.post('/register', registerUser);
 // Đăng nhập người dùng
 router.post('/login', loginUser);
 
-// Middleware xác thực
-router.get('/profile', authMiddleware, (req, res) => {
-    res.json({ message: 'Thông tin người dùng', userId: req.user.id });
-});
+// Xem hồ sơ người dùng
+router.get('/profile', authMiddleware, getProfile);
+
+// Chỉnh sửa thông tin cá nhân
+router.put('/profile', authMiddleware, updateProfile);
+
+// Đổi mật khẩu
+router.put('/change-password', authMiddleware, changePassword);
 
 module.exports = router;

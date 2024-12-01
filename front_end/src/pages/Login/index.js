@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios
+import React, { useState, useEffect, useContext} from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
 import apiService from "../../api/api";
-// import { AuthContext } from "../../components/AuthContext/AuthContext";
+import { AuthContext } from "../../components/AuthContext/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const [phonenumber, setPhonenumber] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
+    const { login } = useContext(AuthContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    const navigate = useNavigate();
 
     const validatePhoneNumber = (phoneNumber) => {
         return /^(0)[3|5|7|8|9][0-9]{8}$/.test(phoneNumber);
@@ -51,6 +54,8 @@ export default function LoginPage() {
             console.log(response.data.success);
             console.log(response.data);
             
+            login(response.data.user, response.data.token);
+            
             if (response.data.success) {
                 if (response.data.role === "admin") {
                     // Lưu token vào localStorage
@@ -60,8 +65,15 @@ export default function LoginPage() {
                     localStorage.setItem("role", response.data.role);
                     
                     window.location.href = "/admin"; // Chuyển hướng đến trang admin
-                } else {
-                    window.location.href = "/"; // Chuyển hướng đến trang chủ
+                }   
+                 else {
+                    localStorage.setItem("authToken", response.data.token);
+
+                    localStorage.setItem("phoneNumber", response.data.phoneNumber);
+
+                    localStorage.setItem('isLoggedIn', true); // Lưu trạng thái đăng nhập
+
+                    navigate("/");// Chuyển hướng đến trang chủ
                 }
             } else {
                 const newErrors = { ...errors };

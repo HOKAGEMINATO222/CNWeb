@@ -16,11 +16,13 @@ body {
 }
 
 .login-form {
+    margin-top: 100px;
+    margin-bottom: 50px;
     background-color: #fff;
     border-radius: 15px;
     padding: 50px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 400px;
+
 }
 
 .title {

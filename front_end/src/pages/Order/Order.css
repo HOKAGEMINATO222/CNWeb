@@ -1,0 +1,202 @@
+.cart-page {
+    margin-top: 120px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 490px;
+    
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 250px;
+    margin-right: 250px;
+
+}
+.cart-page h1{
+    width: 300px;
+    margin-bottom: 20px;
+    margin-left: 609px;
+}
+
+
+.checkbox-item-cb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-right: 10px;
+    border: 2px solid #203347; /* Khung của checkbox */
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.checkbox-item-cb:hover{
+    background-color: #b8d1cb;
+}
+.checkbox-icon {
+    font-size: 24px;
+    color: #007bff;
+    opacity: 0; /* Ẩn icon mặc định */
+}
+
+.checkbox-item-cb.selected .checkbox-icon {
+    opacity: 1; /* Hiển thị icon khi được chọn */
+    
+}
+
+
+.cart-item img {
+    max-width: 200px;
+    margin-right: 20px;
+    border-radius: 8px;
+}
+
+.cart-item-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cart-item-details h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.cart-item-details p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 30px;
+    width: 120px;
+   
+}
+
+.quantity-controls button {
+    background-color: #c4cbd2;
+    color: white;
+    border: none;
+    padding : 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 32px;
+    color: #2f3232;
+}
+
+.quantity-controls button:hover {
+    background-color: #b6b8b8;
+}
+
+.cart-item-details .quantity-controls {
+    margin-left: auto;
+}
+
+.Empty-cart{
+    width: 500 px;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+}
+.btn-go-home {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #038c83;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer ;
+    width: 230px;
+}
+
+.btn-go-home:hover {
+    background-color: #06b9ad;
+}
+.icon-container{
+    margin-bottom: 20px;
+}
+p{
+    font-size: 20px;
+}
+.total-price-btn {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: default;
+}
+.price-details{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+.delete-product{
+    width: 100px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    background-color: #aa580f;
+    margin-top: 10px;
+    font-family: Futura;
+    
+}
+.delete-product:hover{
+    background-color: #d26c12;
+}
+.total-price{
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    color: #2f3232;
+    font-family:Futura;
+    width: 270px;
+    
+}
+.total-price:hover{
+    background-color:#f0f0f0;;
+}
+.quantity-all{
+    display: flex;
+    align-items: center;
+}
+.bottom-order{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 250px;
+    margin-right: 250px;
+}
+.bottom-order button{
+    width: 260px;
+    background-color: #038c83;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.bottom-order button:hover{
+    background-color: #0bbdb8;
+    
+}

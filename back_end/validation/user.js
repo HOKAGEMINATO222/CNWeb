@@ -37,4 +37,18 @@ const loginSchema = Joi.object({
     })
 });
 
-module.exports = {registerSchema,loginSchema};
+
+const updateProfileSchema = Joi.object({
+    userName: Joi.string().min(3).max(30),
+    diaChi: Joi.string().max(100),
+    email: Joi.string().email().max(50)
+});
+
+const changePasswordSchema = Joi.object({
+    oldPassword: Joi.string().min(6).required(),
+    newPassword: Joi.string().min(6).required()
+});
+
+module.exports = { registerSchema, loginSchema, updateProfileSchema, changePasswordSchema };
+
+
