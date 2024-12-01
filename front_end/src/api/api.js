@@ -46,6 +46,9 @@ const apiService = {
       newPassword
   }),
 
+  // **Product APIs**//
+  getProductById: (productId) => apiInstance.get(`/product/${productId}`),
+
   // **Order APIs** 
   createOrder: (orderData) => apiInstance.post("/orders", orderData),
   getUserOrders: (userId) => apiInstance.get(`/orders/${userId}`),

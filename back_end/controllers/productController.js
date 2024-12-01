@@ -41,5 +41,28 @@ const getProducts = async (req, res) => {
   }
 };
 
+// get product by id
+const getProductById = async (req, res) => {
+  const { productId } = req.params;
 
-module.exports = {createProduct, getProducts };
+  try {
+    const product = await ProductModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ 
+      message: 'Product details fetched successfully', 
+      product 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      message: 'Error fetching product details', 
+      error: err.message 
+    });
+  }
+};
+
+
+module.exports = {createProduct, getProducts, getProductById };

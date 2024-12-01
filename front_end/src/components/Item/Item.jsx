@@ -13,7 +13,7 @@ function Item(props) {
   return (
     <div className='item'>
       <div className="item-info">
-        <Link to={`/product/${props._id}`}>
+        <Link to={`/product/${props.id}`}>
           <div className="item-image">
             <img src={props.image} alt={props.name} />
           </div>

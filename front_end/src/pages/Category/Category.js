@@ -9,8 +9,8 @@ import saleFilt from '../../components/Assets/percentage.svg'
 import money from '../../components/Assets/money.svg'
 import rating from '../../components/Assets/rating.svg'
 import apiService from '../../api/api.js';
-
-
+ 
+ 
 function Category(props) {
   const [maxIndex, setMaxIndex] = useState(20);
   const { brandName } = useParams();
@@ -22,108 +22,133 @@ function Category(props) {
   const { category } = props;
   const [priceRangeFilter, setPriceRangeFilter] = useState('');
   const [ratingFilter, setRatingFilter] = useState('');
-
-  
+  const [brandImages, setBrandImages] = useState({});
+ 
+  useEffect(() => {
+    const fetchBrandImages = async () => {
+      const images = {};
+      for (const brand of brandList) {
+        const image = await getBrandImage(brand);
+        images[brand] = image || '/path/to/default-image.png'; // Đặt hình mặc định nếu không có
+      }
+      setBrandImages(images);
+    };
+ 
+    fetchBrandImages();
+  }, [brandList]);
+ 
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await apiService.getProducts();
         const products = response.data.products || [];
         setProducts(products);
-        console.log(products[0].brand.name)
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
-
+ 
     fetchProducts();
-  }, [category, brandName]);
-
-
+  }, []);
+ 
+ 
+ 
   useEffect(() => {
     // reset lại filters khi đổi category
-    setProductBrand(''); 
-    setActiveFilter(null); 
-    setPriceRangeFilter(''); 
-    setRatingFilter(''); 
+    setProductBrand('');
+    setActiveFilter(null);
+    setPriceRangeFilter('');
+    setRatingFilter('');
     setFilteredProducts([]);
   }, [category, brandName]);
-  
-  useEffect(() => { 
-    window.scrollTo(0, 0);  
+ 
+  useEffect(() => {
+    window.scrollTo(0, 0);
   }, [category]);
-  
-  function getBrandImage(brandName) {
-    const product = apiService.getProducts.data.products.find(product => product.brand.name.toLowerCase() === brandName.toLowerCase());
-    console.log(product.brand.name)
+ 
+  async function getBrandImage(brandName) {
+    try {
+      const response = await apiService.getProducts();
+      const product = response.data.products.find(product => product.brand.name.toLowerCase().trim() === brandName.toLowerCase().trim());
       if (product) {
-      return product.brand.image;
-    } 
+        return product.brand.image;
+      }
+    } catch (error) {
+      console.error('Error fetching brand image:', error);
+      return null;
+    }
   }
+ 
   const handlePriceRangeFilter = (range) => {
     setPriceRangeFilter(range);
   };
-  
+ 
   const handleRatingFilter = (rating) => {
     setRatingFilter(rating);
   };
-  
+ 
   const handleBrandFilter = (brand) => {
     setProductBrand(brand);
   };
-
+ 
   const handleFilterClick = (filter) => {
     setActiveFilter(filter);
   };
-
+ 
   const filterByPriceRange = (minPrice, maxPrice) => {
-    setActiveFilter({ min: minPrice, max: maxPrice });
+    setActiveFilter({ type: 'price', min: minPrice, max: maxPrice });
   };
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await apiService.getProducts();
-        const products = response.data.products
-        setProducts(products); 
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
   
-    fetchProducts();
-  }, [category, brandName]);
-  
-
+ 
+ 
   useEffect(() => {
-    const product_category = products.filter(product => product.category === category);
-
-    // Update brand list
-    const brands = Array.from(new Set(product_category.map(product => product.brand.name)));
-    setBrandList(brands);
-
-    // Filter products by brand if a brand is specified
-    let filteredByCategory = product_category;
+    let filteredByCategory = products.filter(
+      (product) => product.category.toLowerCase().trim() === category.toLowerCase().trim()
+    );
+  
+    // Lọc theo brand nếu có
     if (brandName) {
-      filteredByCategory = filteredByCategory.filter(item => item.brand.name.toLowerCase() === brandName.toLowerCase());
-      setProductBrand(brandName);
+      filteredByCategory = filteredByCategory.filter(
+        (item) => item.brand.name.toLowerCase() === brandName.toLowerCase()
+      );
+      setProductBrand(brandName); // Cập nhật brand hiện tại
     }
-
+  
     setFilteredProducts(filteredByCategory);
+  
+    // Cập nhật danh sách brand
+    const brands = Array.from(
+      new Set(
+        filteredByCategory.map((product) => product.brand.name.toLowerCase())
+      )
+    ).map((brand) => brand.charAt(0).toUpperCase() + brand.slice(1));
+    setBrandList(brands);
   }, [products, category, brandName]);
+  
 
   useEffect(() => {
-    let filteredProducts = products.filter(product => {
-      if (productBrand && product.brand.name.toLowerCase() !== productBrand.toLowerCase()) {
-        return false;
-      }
-      if (activeFilter && activeFilter.min && activeFilter.max) {
-        const discountedPrice = product.old_price * (1 - product.sale / 100);
+    // Bước 1: Lọc sản phẩm theo danh mục
+    let filteredProducts = products.filter(
+      (product) => product.category.toLowerCase().trim() === category.toLowerCase().trim()
+    );
+  
+    // Bước 2: Lọc sản phẩm theo thương hiệu nếu có
+    if (productBrand) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.brand.name.toLowerCase() === productBrand.toLowerCase()
+      );
+    }
+  
+    // Bước 3: Lọc sản phẩm theo phạm vi giá nếu có
+    if (activeFilter && activeFilter.type === 'price' && activeFilter.min !== undefined && activeFilter.max !== undefined) {
+      filteredProducts = filteredProducts.filter((product) => {
+        const discountedPrice = product.price * (1 - product.sale / 100);
         return discountedPrice >= activeFilter.min && discountedPrice <= activeFilter.max;
-      }
-      return true;
-    });
-
+      });
+    }
+  
+    // Bước 4: Áp dụng sắp xếp theo tiêu chí đã chọn
     if (activeFilter && activeFilter.type === 'sort') {
       switch (activeFilter.value) {
         case 'highToLow':
@@ -142,14 +167,17 @@ function Category(props) {
           break;
       }
     }
-
+  
+    // Cập nhật danh sách sản phẩm đã lọc vào state
     setFilteredProducts(filteredProducts);
-  }, [products, productBrand, activeFilter]);
-
+  }, [products, productBrand, category, activeFilter]);
+  
+  
+ 
   const handleSortClick = (sortType) => {
     setActiveFilter({ type: 'sort', value: sortType });
   };
-
+ 
   return (
     <div className='category-container'>
       <Breadcrumbs category={props.category} brand={brandName} />
@@ -164,13 +192,20 @@ function Category(props) {
               className={`list-brand-item ${brand.toLowerCase() === productBrand.toLowerCase() ? 'active' : ''}`}
               onClick={() => handleBrandFilter(brand)}
             >
-              <div className={`brand-img-container ${brand.toLowerCase() === productBrand.toLowerCase() ? 'active-brand-container' : ''}`}>
-                <img src={getBrandImage(brand)} alt={brand} className="brand-img" />
+              <div
+                className={`brand-img-container ${brand.toLowerCase() === productBrand.toLowerCase() ? 'active-brand-container' : ''
+                  }`}
+              >
+                <img
+                  src={brandImages[brand] || '/path/to/default-image.png'}
+                  alt={brand}
+                  className="brand-img"
+                />
               </div>
-
             </Link>
           ))}
         </div>
+ 
       </div>
       <div className="block-filter-sort">
         <div className="filter-sort__title">Sắp xếp theo</div>
@@ -191,7 +226,7 @@ function Category(props) {
             className={`btn-filter button__sort ${activeFilter && activeFilter.value === 'hotDeals' ? 'active' : ''}`}
             onClick={() => handleSortClick('hotDeals')}
           >
-
+ 
             Khuyến mãi HOT
           </a>
           <a
@@ -221,14 +256,14 @@ function Category(props) {
             className={`btn-filter button__sort ${activeFilter && activeFilter.min === 10000000 && activeFilter.max === 20000000 ? 'active' : ''}`}
             onClick={() => filterByPriceRange(10000000, 20000000)}
           >
-         
+ 
             10 - 20 triệu
           </a>
           <a
             className={`btn-filter button__sort ${activeFilter && activeFilter.min === 20000000 && activeFilter.max === 30000000 ? 'active' : ''}`}
             onClick={() => filterByPriceRange(20000000, 30000000)}
           >
-         
+ 
             20 - 30 triệu
           </a>
           <a
@@ -237,11 +272,11 @@ function Category(props) {
           >
             Trên 30 triệu
           </a>
-
+ 
         </div>
       </div>
-            
-
+ 
+ 
       <div className="block-filter-indexSort">
         <div className="filter-indexSort-title">
           <p>
@@ -255,12 +290,12 @@ function Category(props) {
               )
             }
           </p>
-
+ 
         </div>
         <div className="block-products-filter">
-          {filteredProducts.slice(0, Math.min(maxIndex, products.length)).map((product, index) => {
+          {filteredProducts.slice(0, Math.min(maxIndex, filteredProducts.length)).map((product, index) => {
             return (
-              <Item 
+              <Item
                 key={index}
                 id={product.id}
                 name={product.name}
@@ -272,14 +307,14 @@ function Category(props) {
             )
           })}
         </div>
-        {(maxIndex < products.length) && 
-        <div onClick={() => setMaxIndex(prev => prev + 20)} className="category-loadmore">
-          Xem thêm {products.length - maxIndex} sản phẩm
-        </div>
+        {(maxIndex < filteredProducts.length) &&
+          <div onClick={() => setMaxIndex(prev => prev + 20)} className="category-loadmore">
+            Xem thêm {filteredProducts.length - maxIndex} sản phẩm
+          </div>
         }
       </div>
     </div>
   )
 }
-
+ 
 export default Category;

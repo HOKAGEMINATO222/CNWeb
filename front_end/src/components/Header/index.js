@@ -47,7 +47,7 @@ function Header() {
   };
 
 
-    console.log(isLoggedIn)
+
     return (
         <div className="header">
             <div className="menu">

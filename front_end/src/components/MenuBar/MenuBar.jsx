@@ -15,7 +15,7 @@ function MenuBar() {
     <>
       <div className='menu-bar'>
         <div className="label-menu-bar">
-          <Link to='/phone'>
+          <Link to='/điện thoại'>
             <div className="label-item">
               <div className="item-content">
                 <div className="category-icon">
@@ -45,7 +45,7 @@ function MenuBar() {
           </Link>
         </div>
         <div className="label-menu-bar">
-          <Link to='/tai-nghe'>
+          <Link to='/tai nghe'>
             <div className="label-item">
               <div className="item-content">
                 <div className="category-icon">
@@ -60,7 +60,7 @@ function MenuBar() {
           </Link>
         </div>
         <div className="label-menu-bar">
-          <Link to='/ban-phim'>
+          <Link to='/bàn phím'>
             <div className="label-item">
               <div className="item-content">
                 <div className="category-icon">
@@ -75,7 +75,7 @@ function MenuBar() {
           </Link>
         </div>
         <div className="label-menu-bar">
-          <Link to='/chuot'>
+          <Link to='/chuột'>
             <div className="label-item">
               <div className="item-content">
                 <div className="category-icon">
@@ -90,7 +90,7 @@ function MenuBar() {
           </Link>
         </div>
         <div className="label-menu-bar">
-          <Link to='/phu-kien'>
+          <Link to='/phụ kiện'>
             <div className="label-item">
               <div className="item-content">
                 <div className="category-icon">

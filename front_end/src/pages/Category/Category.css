@@ -24,6 +24,7 @@
 }
 
 .block-filter-brand .list-brand {
+    padding-left: 10px;
     display: flex;
     flex-wrap: wrap;
     margin-top: 15px;
@@ -111,6 +112,7 @@
 .filter-sort__list-filter {
     display: flex;
     flex-wrap: wrap;
+    padding-left: 10px;
     margin-bottom: 20px;
     margin-top: 10px;
 
@@ -118,6 +120,7 @@
 .criteria-sort__list-filter {
     display: flex;
     flex-wrap: wrap;
+    padding-left: 10px;
     margin-bottom: 20px;
     margin-top: 10px;
 }
@@ -169,3 +172,81 @@
     width: 15px;
 }
 
+.block-filter-brand .list-brand .list-brand-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 4px;
+    height: 36px;
+    margin: 0 10px 10px 0;
+    padding: 2px 4px;
+    transition: all 0.3s ease-in-out;
+}
+
+.block-filter-brand .list-brand .list-brand-item:hover {
+    border-color: var(--color7); /* Thay đổi màu sắc khi di chuột */
+    transform: scale(1.05); /* Tăng kích thước một chút khi di chuột */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ */
+}
+
+.block-filter-brand .list-brand .list-brand-item.active {
+    border: 1.5px solid var(--color7);
+}
+
+.filter-sort__list-filter .btn-filter {
+    align-items: center;
+    background: white;
+    border: 1.5px solid var(--main-color2);
+    border-radius: 10px;
+    color: #444;
+    cursor: pointer;
+    display: flex;
+    font-size: 12px;
+    height: 36px;
+    margin: 0 10px 10px 0;
+    padding: 7px 24px;
+    white-space: nowrap;
+    transition: all 0.3s ease-in-out; /* Thêm hiệu ứng chuyển tiếp */
+}
+
+.filter-sort__list-filter .btn-filter:hover {
+    background: rgb(50, 132, 194); /* Thay đổi nền khi di chuột */
+    border-color: var(--color7);
+    color: rgb(255, 255, 0); /* Thay đổi màu chữ khi hover */
+}
+
+.filter-sort__list-filter .btn-filter.active {
+    background: rgb(50, 132, 194); /* Thay đổi nền khi di chuột */
+    border: 1.5px solid var(--color7);
+    color: rgb(255, 255, 0); /* Thay đổi màu chữ khi hover */
+}
+
+.criteria-sort__list-filter .btn-filter {
+    align-items: center;
+    background: white;
+    border: 1.5px solid var(--main-color2);
+    border-radius: 10px;
+    color: #444;
+    cursor: pointer;
+    display: flex;
+    font-size: 12px;
+    height: 36px;
+    margin: 0 10px 10px 0;
+    padding: 7px 24px;
+    white-space: nowrap;
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
+  }
+  
+  .criteria-sort__list-filter .btn-filter:hover {
+    background: rgb(50, 132, 194); /* Background change on hover */
+    border-color: var(--color7);
+    color: rgb(255, 255, 0); /* Text color change on hover */
+  }
+  
+  .criteria-sort__list-filter .btn-filter.active {
+    background: rgb(50, 132, 194); /* Background change on hover */
+    border: 1.5px solid var(--color7);
+    color: rgb(255, 255, 0); /* Text color change on hover */
+  }
+  

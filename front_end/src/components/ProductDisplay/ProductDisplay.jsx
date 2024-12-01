@@ -114,8 +114,8 @@ function ProductDisplay(props) {
             </div>
             <div className="box-product-detail__right">
                 <div className="box-price1">
-                   <p className="item-price-new">{formatPrice(product.old_price * (1 - product.variants[selectedVariantIndex].sale/100))}</p>
-                   <p className="item-price-old">{formatPrice(product.old_price)}</p>
+                   <p className="item-price-new">{formatPrice(product.price * (1 - product.variants[selectedVariantIndex].sale/100))}</p>
+                   <p className="item-price-old">{formatPrice(product.price)}</p>
                    <div className="item-price-percent">
                      <p className="item-rice-percent-detail">
                        Giảm &nbsp;
@@ -139,7 +139,7 @@ function ProductDisplay(props) {
                              <img src={variant.image} alt={`${product.name}`} />
                              <div>
                                <strong className="item-variant-name">{variant.color}</strong>
-                               <span>{formatPrice(product.old_price * (1 - variant.sale/100))}</span>
+                               <span>{formatPrice(product.price * (1 - variant.sale/100))}</span>
                              </div>
                            </a>
                          </li>

@@ -130,7 +130,7 @@ h1{
 }
 
 .box-gallery .thumbnail-slide.swiper-container .swiper-wrapper .swiper-slide.swiper-slide-thumb-active {
-    box-shadow: 0 0 0 1px var(--main-color2);
+    box-shadow: 0 0 0 1px white;
 }
 
 .box-gallery .gallery-slide.swiper-container .swiper-button-prev,
@@ -183,12 +183,13 @@ h1{
     flex-basis: 0;
     flex-grow: 1;
     flex-shrink: 1;
-    height: 665px;
+    padding: 5px;
+    height: 618px;
     position: sticky;
     top: 120px;
+    margin-left: 5px;
     width: calc(33.33333% + 40px);
     z-index: 10;
-    padding: 0 0 0 20px;
 
     
 }
@@ -200,11 +201,8 @@ h1{
   
   .swiper-slide {
     flex: 0 0 auto; /* Prevent the slides from growing or shrinking */
-    width: 90%; /* Ensure each slide takes up the full width */
-  }
   
-
-
+  }
   
   .swiper-button-prev .icon,
   .swiper-button-next .icon {
@@ -254,7 +252,7 @@ h1{
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        border: 1px solid var(--main-color2);
+        border: 1px solid rgb(126, 166, 230);
         border-radius: 8px;
         color: #444;
         cursor: pointer;
@@ -316,7 +314,6 @@ h1{
     font-weight: bold; 
   }
   
-
 
 .productdisplay .box-price1 {
     display: flex !important;

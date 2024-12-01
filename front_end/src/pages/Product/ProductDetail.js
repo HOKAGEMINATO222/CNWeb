@@ -1,44 +1,87 @@
 // components/ProductDetail.js
-import React from "react";
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useParams, Link } from "react-router-dom";
 import "./ProductDetail.css";
-
-const products = {
-    1: {
-        id: 1,
-        image: "/images/iphone16promax.png",
-        name: "Iphone 16 Pro Max",
-        price: "46.999.000₫",
-        rating: 4.8,
-        sold: "60,1k",
-        description: "Điện thoại cao cấp với màn hình lớn và nhiều tính năng vượt trội."
-    },
-    // Thêm dữ liệu cho các sản phẩm khác nếu cần
-};
+import apiService from "../../api/api";
+import ProductDisplay from '../../components/ProductDisplay/ProductDisplay';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.js';
+import RecommendedProducts from '../../components/RecommendedProducts/RecommendedProducts.js'
+import all_products from '../../components/Assets/all_product';
+import DescriptionProduct from '../../components/DescriptionProduct/DescriptionProduct';
+import CommentAndRating from '../../components/CommentAndRating/CommentAndRating';
+import LoginPopup from '../../components/LoginPopup/LoginPopup.js';
 
 export default function ProductDetail() {
     const { productId } = useParams();
-    const product = products[productId];
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+  //  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('user') !== null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const popupRef = useRef(null);
+    const isFirstRender = useRef(true);
+
+    
+    useEffect(() => { 
+        window.scrollTo(0, 0);  
+    }, [productId]);
+
+
+    const handleLogin = () => {
+    // Xử lý đăng nhập ở đây
+    // localStorage.setItem('isLoggedIn', 'true');
+    // setIsLoggedIn(true);
+    setIsPopupOpen(false); // Đóng popup khi đăng nhập thành công
+    };
+
+    const openPopup = () => {
+    setIsPopupOpen(true);
+    };
+
+    const closePopup = () => {
+    setIsPopupOpen(false);
+};
+
+    useEffect(() => {
+        async function fetchProduct() {
+            try {
+                const response = await apiService.getProductById(productId);
+                setProduct(response.data.product); 
+                setLoading(false);
+            } catch (err) {
+                setError(err.message);
+                setLoading(false);
+            }
+        }
+
+        fetchProduct();
+    }, [productId]);
+
+    if (loading) {
+        return <p>Đang tải...</p>;
+    }
+
+    if (error) {
+        return <p>Lỗi: {error}</p>;
+    }
 
     if (!product) {
         return <p>Sản phẩm không tồn tại.</p>;
     }
-
     return (
-        <div className="product-detail-page">
-            <div className="product-detail-container">
-                <Link to="/" className="back-button">← Trở về trang chủ</Link>
-                <div className="product-detail">
-                    <img src={product.image} alt={product.name} className="product-image" />
-                    <div className="product-info">
-                        <h2 className="product-name">{product.name}</h2>
-                        <p className="product-price">{product.price}</p>
-                        <p className="product-rating">⭐ {product.rating} | Đã bán {product.sold}</p>
-                        <p className="product-description">{product.description}</p>
-                        <button className="add-to-cart-button">Thêm vào giỏ hàng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div className='product-container'>
+            <Breadcrumbs product={product} category={product.category} />
+            {product && <ProductDisplay product={product} />}
+            <DescriptionProduct product={product} />
+            <RecommendedProducts category={product.category} productId={product.id} />
+            <div ref={popupRef}></div>
+            <CommentAndRating onOpenPopup={openPopup} product={product} />
+            {isPopupOpen  && (
+            <div>
+            <LoginPopup onLogin={handleLogin} onClose={closePopup} />
+      </div>
+    )}
+  </div>
     );
 }
