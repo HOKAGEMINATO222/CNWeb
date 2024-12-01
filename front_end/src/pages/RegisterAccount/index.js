@@ -134,7 +134,7 @@ export default function RegisterPage() {
     return (
         <div className="register-container">
             <div className="login-form">
-                
+                <div className="title">Chào mừng quay lại với <span className="app-name">TECH STORE</span></div>
                 <div className="subtitle">Tạo tài khoản của bạn</div>
                 <form onSubmit={handleSubmit}>
                     <div className="input-container">

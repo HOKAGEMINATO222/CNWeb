@@ -28,7 +28,7 @@
   
   .top-bar {
     position: fixed;
-    top: 60px;
+    top: 0px;
     background-color: #e0e0e0;
     display: flex;
     justify-content: space-between;
@@ -88,10 +88,11 @@
   .product-categories {
     position: fixed;
     background-color: #f0f0f0;
-    top: 135px;
+    top: 60px;
     text-align: center;
-    margin-top: 0px;
+    margin-top: 20px;
     width: 100%;
+    padding-top: 15px;
   }
   
   .category-list {
@@ -129,6 +130,7 @@
   }
   
   .category-products h3 {
+    
     font-size: 20px;
     margin-bottom: 10px;
     text-align: center;

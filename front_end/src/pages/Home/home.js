@@ -1,7 +1,11 @@
 // pages/Home/Home.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./home.css";
+import "./Home.css";
+import SliderComponent from "../../components/SliderComponent/SliderComponent";
+import slider1 from '../../assets/images/slider1.jpg'
+import slider2 from '../../assets/images/slider2.jpg'
+import slider3 from '../../assets/images/slider3.jpg'
 
 export default function Home({ isLoggedIn }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -80,25 +84,31 @@ export default function Home({ isLoggedIn }) {
 
     return (
         <div>
-            <div className="top-bar">
-                <div className="search-bar">
-                    <input type="text" placeholder="Tìm kiếm sản phẩm..." />
-                    <button className="search-button">🔍</button>
+            
+                <div className="top-bar">
+                    
+                    <div className="search-bar">
+                        <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+                        <button className="search-button">🔍</button>
+                    </div>
+
+                    <div className="auth-buttons">
+                        {isLoggedIn ? (
+                            <>
+                                <Link to="/cart" className="button">Xem Giỏ Hàng</Link>
+                                <Link to="/profile" className="button">Xem Profile</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="button">Đăng Nhập</Link>
+                                <Link to="/register" className="button">Đăng Ký</Link>
+                            </>
+                        )}
+                    </div>
                 </div>
-                <div className="auth-buttons">
-                    {isLoggedIn ? (
-                        <>
-                            <Link to="/cart" className="button">Xem Giỏ Hàng</Link>
-                            <Link to="/profile" className="button">Xem Profile</Link>
-                        </>
-                    ) : (
-                        <>
-                            <Link to="/login" className="button">Đăng Nhập</Link>
-                            <Link to="/register" className="button">Đăng Ký</Link>
-                        </>
-                    )}
-                </div>
-            </div>
+
+
+
             <section className="product-categories">
                 <h2>Danh Mục Sản Phẩm</h2>
                 <div className="category-list">

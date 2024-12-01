@@ -8,7 +8,7 @@ body {
 .profile-container {
     display: flex;
     position: relative;
-    top: 30px;
+    top: 0px;
     width: 70vw;
     height: 85vh;
     margin: 0 auto;
@@ -214,7 +214,7 @@ body {
     position: fixed;
     width: 70vw;
     background-color: #f0f0f0;
-    top: 60px;
+    top: 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;

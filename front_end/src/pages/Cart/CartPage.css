@@ -3,23 +3,24 @@
     flex-direction: column;
     margin: 0;
     padding: 0;
-    width: 90vw;
-    height: 100vh; /* Hoặc giá trị phù hợp với thiết kế */
+    width: 100vw;
+    height: 100vh; 
 }
 
 .cart-container {
     width: 90vw;
     position: relative;
-    top: 150px;
+    top: 60px;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
+    border-radius: 1px solid #ccc;
     flex: 1 0 auto;
 }
 
 .cart-header-bar {
-    top: 60px;
-    width: 90vw;
+    top: 0px;
+    width: 100vw;
     background-color: #f0f0f0;
     position: fixed;
     display: flex;
