@@ -1,6 +1,8 @@
-// components/ProductDetail.js
-import React from "react";
-import { useParams, Link } from "react-router-dom";
+// src/pages/ProductDetail.js
+import { Link } from 'react-router-dom';
+
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import "./ProductDetail.css";
 
 const products = {

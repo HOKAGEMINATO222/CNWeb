@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { deleteProductAPI, addProductAPI, getProductAPI, updateProductAPI } from "./API"; // Giả sử bạn có một hàm API để cập nhật sản phẩm
+import apiService from "../../api/api";
 import ProductDetails from "./ProductDetails";
 
 const EditProduct = ({ product, setModalChild, handleRefresh }) => {
@@ -22,7 +22,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
     key: Date.now() + Math.random(), // tạo khóa key duy nhất
   }));
   const [variants, setVariants] = useState(initialVariants);
-  const [productImage, setProductImage] = useState(product.hangSanXuat[1]);
+  const [productImage, setProductImage] = useState(product.brand.image);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -49,27 +49,48 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
 
   const onFinish = async (values) => {
     try {
+      console.log("Form Values:", values);
+      console.log("Variants:", variants);
+
+      if (!product._id) {
+        throw new Error("ID sản phẩm không tồn tại");
+      }
+
       const data = {
-        maHangHoa: values.maHangHoa,
-        tenHangHoa: values.tenHangHoa,
-        loaiHangHoa: values.loaiHangHoa,
-        hangSanXuat: values.hangSanXuat,
-        thongTin: values.thongTin.split("\n"),
-        thongSo: values.thongSo.split("\n"),
-        gia: values.gia,
-        variants: [],
+        name: values.name || "", 
+        category: values.category || "",
+        brand: {
+          name: values.brand?.name || "", 
+          image: values.brand?.image || "", 
+        },
+        description: typeof values.description === 'string' ? values.description.split("\n") : [], // Kiểm tra kiểu dữ liệu trước khi split
+        specifications: typeof values.specifications === 'string' ? values.specifications.split("\n") : [],
+        price: values.price || 0, 
+        variants: []
       };
 
-      variants.forEach((variant, index) => {
+      console.log("Description:", data.variants);
+
+      variants.forEach((variant) => {
         data.variants.push({
-          color: variant.color,
-          quantity: variant.quantity,
-          sale: variant.sale,
-          image: variant.image,
+          color: variant.color || "default",
+          quantity: variant.quantity || 0,
+          sale: variant.sale || 0,
+          image: variant.image || "",
         });
       });
+      console.log(product)
+      // Kiểm tra xem có sự thay đổi nào không
+      const isProductChanged = JSON.stringify(data) !== JSON.stringify(product);
+      const areVariantsChanged = JSON.stringify(data.variants) !== JSON.stringify(product.variants);
 
-      await updateProductAPI(data.maHangHoa, data);
+      if (!isProductChanged && !areVariantsChanged) {
+        console.log("not thing to change")
+        message.info("Không có thay đổi nào để cập nhật.");
+        return; // Không gửi đi nếu không có thay đổi
+      }
+
+      await apiService.updateProduct(product._id, data);
       message.success("Sản phẩm được cập nhật thành công!");
       handleRefresh();      
       setModalChild(null);
@@ -80,12 +101,13 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
 
   return (
     <div style={{ width: 1200 }}>
-      <h2 style={{ marginTop: 0 }}>Chỉnh Sửa Sản Phẩm</h2>
+      <h2 style={{ marginTop: 0, marginBottom: 10, textAlign: "center", fontSize: "24px" }}>Chỉnh sửa Sản Phẩm</h2>
+      
       <Form
         name="chinhSuaSanPham"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
-        initialValues={{ ...product, thongTin: product.thongTin.join('\n'), thongSo: product.thongSo.join('\n') }}
+        initialValues={{ ...product, description: product.description.join('\n'), specifications: product.specifications.join('\n') }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -93,22 +115,15 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Mã"
-              name="maHangHoa"
-              rules={[{ required: true, message: "Hãy nhập mã sản phẩm!" }]}
-            >
-              <Input disabled />
-            </Form.Item>
-            <Form.Item
               label="Tên"
-              name="tenHangHoa"
+              name="name"
               rules={[{ required: true, message: "Hãy nhập tên sản phẩm!" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Loại"
-              name="loaiHangHoa"
+              name="category"
               rules={[{ required: true, message: "Hãy nhập loại hàng hóa!" }]}
             >
               <Input />
@@ -118,7 +133,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
                 <Col span={16}>
                   <Form.Item
                     label="Tên"
-                    name={["hangSanXuat", 0]}
+                    name={["brand", "name"]}
                     required
                     rules={[
                       {
@@ -133,7 +148,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
                   </Form.Item>
                   <Form.Item
                     label="Url ảnh"
-                    name={["hangSanXuat", 1]}
+                    name={["brand", "image"]}
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 19 }}
                     style={{
@@ -172,7 +187,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Thông tin"
-              name="thongTin"
+              name="description"
               rules={[
                 { required: true, message: "Hãy nhập thông tin sản phẩm!" },
               ]}
@@ -181,7 +196,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Thông số"
-              name="thongSo"
+              name="specifications"
               rules={[
                 { required: true, message: "Hãy nhập thông số sản phẩm!" },
               ]}
@@ -190,7 +205,7 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Giá"
-              name="gia"
+              name="price"
               wrapperCol={{ span: 12 }}
               rules={[{ required: true, message: "Hãy nhập giá sản phẩm!" }]}
             >
@@ -275,7 +290,6 @@ const EditProduct = ({ product, setModalChild, handleRefresh }) => {
                     </Form.Item>
                   </Col>
                   <Col span={5}>
-                    {console.log(variant.image)}
                     {variant.image && (
                       <Image
                         height={100}

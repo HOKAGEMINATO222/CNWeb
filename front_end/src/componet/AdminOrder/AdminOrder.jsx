@@ -3,67 +3,77 @@ import { Button, Modal, Space, Table, message, Input } from "antd";
 import { SearchOutlined, DeleteFilled, ExclamationCircleFilled } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import OrderDetails from "./OrderDetails";
-// import AllApi from '../../api/api';
+import axios from 'axios';  // Import axios for API requests
+import apiService from '../../api/api.js'
 
+// Helper function to format date
 function formatDate(isoString) {
-  // Chuyển đổi chuỗi ISO 8601 thành đối tượng Date
   const date = new Date(isoString);
-
-  // Lấy các thành phần của ngày và giờ theo giờ địa phương
   const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() trả về giá trị từ 0 đến 11
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  // Định dạng thành chuỗi theo định dạng DD/MM/YYYY HH:MM:SS
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
+  return `${hours}:${minutes}:${seconds}\n${day}/${month}/${year}` ;
 }
-
 
 const AdminOrder = () => {
   const [refresh, setRefresh] = useState(false);
-  const [orders, setOrders] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [modalChild, setModalChild] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // const response = await AllApi.getAllOrder();
-        // console.log(response.data);
-        // const ordersData = response.data.map(order => ({
-        //   maDonHang: order.maDonHang,
-        //   userName: order.user.userName,
-        //   ngayDat: formatDate(order.ngayDat),
-        //   ngayGiao: order.ngayGiao ? formatDate(order.ngayGiao) : "Chưa xác định",
-        //   tinhTrangDonHang: order.tinhTrangDonHang ? "Đã thanh toán" : "Chưa thanh toán",
-        //   order: order,
-        // }));
+        // Lấy token từ localStorage hoặc cookie
+        const token = localStorage.getItem('authToken'); 
 
-        // setOrders(ordersData);
-        // console.log(ordersData);
+        if (!token) {
+          message.error('Bạn cần đăng nhập để truy cập dữ liệu!');
+          return;
+        }
+        // Gửi yêu cầu API với Authorization header
+        const response = await apiService.getAllOrders();
+        // Map the order data for table display
+        const ordersData = response.data.map(order => ({
+          maDonHang: order._id,
+          userName: order.userId.userName,
+          ngayDat: formatDate(order.createdAt),
+          items: order.items,
+          paymentMethod: order.paymentMethod ,
+          paymentStatus: order.paymentStatus,
+          orderStatus :order.orderStatus,
+          totalAmount: order.totalAmount,
+          order: order,
+        }));
+
+        setOrders(ordersData);
       } catch (error) {
         console.error(error);
         message.error('Không thể lấy dữ liệu đơn hàng!');
+      } finally {
+         setLoading(false);
       }
     };
 
     fetchData();
-  }, [refresh]);
+}, [refresh]);
+
 
   const onRefresh = () => {
     setRefresh(prev => !prev);
   };
+
   const deleteOrder = async (record) => {
     try {
-      // await AllApi.deleteOrder(record.maDonHang);
+      await apiService.deleteOrder(record._id)
 
-      // const updatedOrders = orders.filter(
-      //   (order) => order.maDonHang !== record.maDonHang
-      // );
-      // setOrders(updatedOrders);
-      // message.success(`Đã hủy đơn hàng của: ${record.user.userName}`);
+      const updatedOrders = orders.filter(order => order.maDonHang !== record.maDonHang);
+      setOrders(updatedOrders);
+      message.success(`Đã hủy đơn hàng của: ${record.userName}`);
     } catch (error) {
       console.error(error);
       message.error(`Hủy đơn hàng thất bại: Mã ${record.maDonHang}`);
@@ -79,6 +89,7 @@ const AdminOrder = () => {
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -173,6 +184,7 @@ const AdminOrder = () => {
         text
       ),
   });
+
   const columns = [
     {
       title: "Mã",
@@ -183,7 +195,7 @@ const AdminOrder = () => {
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "User name",
+      title: "Tên người dùng",
       dataIndex: "userName",
       key: "userName",
       ellipsis: true,
@@ -198,22 +210,31 @@ const AdminOrder = () => {
       ...getColumnSearchProps("ngayDat"),
     },
     {
-      title: "Ngày giao",
-      dataIndex: "ngayGiao",
-      key: "ngayGiao",
+      title: "Hình thức thanh toán",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
       ellipsis: true,
-      sorter: (a, b) => a.ngayGiao.localeCompare(b.ngayGiao),
+      sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Tình trạng",
-      dataIndex: "tinhTrangDonHang",
+      title: "Tình trạng thanh toán",
+      dataIndex: "paymentStatus",
       key: "tinhTrang",
       ellipsis: true,
-      sorter: (a, b) => a.tinhTrangDonHang.localeCompare(b.tinhTrangDonHang),
+      sorter: (a, b) => a.paymentStatus.localeCompare(b.paymentStatus),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Trạng thái giao hàng",
+      dataIndex: "orderStatus",
+      key: "orderStatus",
+      ellipsis: true,
+      sorter: (a, b) => a.orderStatus.localeCompare(b.orderStatus),
       sortDirections: ["descend", "ascend"],
     },
   ];
+
   return (
     <div>
       <Modal
@@ -229,23 +250,24 @@ const AdminOrder = () => {
         {modalChild}
       </Modal>
       <Table
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: () => {
-              setModalChild(<OrderDetails order={record.order} handleRefresh={onRefresh} />);
-            },
-            onMouseEnter: (event) => {
-              event.currentTarget.style.cursor = "pointer";
-            },
-            onMouseLeave: (event) => {
-              event.currentTarget.style.cursor = "default";
-            },
-          };
-        }}
+        onRow={(record) => ({
+          onClick: () => {
+            setModalChild(<OrderDetails order={record.order} handleRefresh={onRefresh} />);
+          },
+          onMouseEnter: (event) => {
+            event.currentTarget.style.cursor = "pointer";
+          },
+          onMouseLeave: (event) => {
+            event.currentTarget.style.cursor = "default";
+          },
+        })}
         columns={columns}
+        rowKey="_id"
+        loading={loading}
         dataSource={orders}
       />
     </div>
   );
 };
+
 export default AdminOrder;

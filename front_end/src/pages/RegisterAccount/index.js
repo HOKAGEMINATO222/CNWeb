@@ -3,6 +3,7 @@ import addressData from './address-data.json';
 import { Link } from "react-router-dom";
 import axios from "axios"; // Import axios
 import "./RegisterAccount.css";
+import apiService from "../../api/api";
 
 export default function RegisterPage() {
     const [phonenumber, setPhonenumber] = useState("");
@@ -68,6 +69,9 @@ export default function RegisterPage() {
         if (!password) {
             validationErrors.password = "Hãy tạo mật khẩu!";
         }
+        if(password.length < 6){
+            validationErrors.password = "Mật khẩu phải có ít nhất 6 ký tự!";
+        }
         if (!rePassword) {
             validationErrors.rePassword = "Hãy xác nhận mật khẩu!";
         } else if (password !== rePassword) {
@@ -88,8 +92,13 @@ export default function RegisterPage() {
                 password: password,
                 diaChi: addressString,
             };
+
             const savedUser = await addUser(newUser);
+
+            console.log('User saved successfully:', savedUser);
+
             if (savedUser) {
+                console.log('User saved successfully:', savedUser);
                 setSuccessMessage("Đăng ký thành công! Đang chuyển hướng...");
                 setTimeout(() => {
                     window.location.reload();
@@ -102,22 +111,18 @@ export default function RegisterPage() {
 
     const addUser = async (newUser) => {
         try {
-            const response = await axios.post("http://localhost:5000/users/register", newUser); 
+            const response = await apiService.registerUser(newUser);
+           
             if (response.data.success) {
-                return response.data.data;
+                return response.data.user;
             } else {
-                if (response.data.message === "User existed") {
+                if (response.data.message === "Người dùng đã tồn tại!") {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         phonenumber: "Số điện thoại đã được sử dụng!",
                     }));
                 }
-                if (response.data.message === "Failed : DuplicateUserName") {
-                    setErrors((prevErrors) => ({
-                        ...prevErrors,
-                        username: "Tên người dùng đã được sử dụng!",
-                    }));
-                }
+                
             }
         } catch (error) {
             console.error('Error occurred while registering user:', error);

@@ -19,6 +19,7 @@ const registerSchema = Joi.object({
         'string.empty': 'Địa chỉ là bắt buộc',
         'any.required': 'Địa chỉ là bắt buộc'
     }),
+    email: Joi.string().email().optional(),
     role: Joi.string().optional() 
 });
 

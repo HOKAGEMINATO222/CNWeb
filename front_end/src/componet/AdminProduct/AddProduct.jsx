@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { addProductAPI } from "./API";
+import apiService from "../../api/api";
 
 const AddProduct = ({ setModalChild, handleRefresh }) => {
   const [variants, setVariants] = useState([]);
@@ -44,36 +44,54 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
 
   const onFinish = async (values) => {
     try {
+      console.log("Form Values:", values);
+      console.log("Variants:", variants);
+  
+      // Kiểm tra và tạo dữ liệu chính xác
       const data = {
-        tenHangHoa: values.tenHangHoa,
-        loaiHangHoa: values.loaiHangHoa,
-        hangSanXuat: values.hangSanXuat,
-        thongTin: values.thongTin.split("\n"),
-        thongSo: values.thongSo.split("\n"),
-        gia: values.gia,
+        name: values.name || "", // Đảm bảo giá trị không undefined/null
+        category: values.category || "",
+        brand: {
+          name: values.brand?.name || "", 
+          image: values.brand?.image || "", // Đảm bảo có hình ảnh cho thương hiệu
+        },
+        description: values.description ? values.description.split("\n") : [], // Kiểm tra null/undefined
+        specifications: values.specifications ? values.specifications.split("\n") : [],
+        price: values.price || 0,
         variants: [],
       };
-      variants.forEach((variant, index) => {
-        data.variants.push({
-          color: variant.color,
-          quantity: variant.quantity,
-          sale: variant.sale,
-          image: variant.image,
+  
+      // Xử lý variants
+      if (Array.isArray(variants)) {
+        variants.forEach((variant) => {
+          data.variants.push({
+            color: variant.color || "default",
+            quantity: variant.quantity || 0,
+            sale: variant.sale || 0,
+            image: variant.image || "",
+          });
         });
-      });
-
-      await addProductAPI(data);
+      } else {
+        console.warn("Variants không phải là một mảng hợp lệ");
+      }
+  
+      console.log("Data to send:", data);
+  
+      // Gọi API để thêm sản phẩm mới
+      await apiService.createProduct(data);
       message.success("Sản phẩm được thêm thành công!");
       handleRefresh();
       setModalChild(null);
     } catch (e) {
-      message.error(e.message);
+      message.error(e.message || "Đã xảy ra lỗi khi thêm sản phẩm");
     }
   };
+  
 
   return (
     <div style={{ width: 1200 }}>
-      <h2 style={{ marginTop: 0, marginBottom: 10 }}>Thêm Sản Phẩm</h2>
+      <h2 style={{ marginTop: 0, marginBottom: 10, textAlign: "center", fontSize: "24px" }}>Thêm Sản Phẩm</h2>
+      
       <Form
         name="themSanPham"
         labelCol={{ span: 4 }}
@@ -83,18 +101,19 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
+      
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
               label="Tên"
-              name="tenHangHoa"
+              name="name"
               rules={[{ required: true, message: "Hãy nhập tên sản phẩm!" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Loại"
-              name="loaiHangHoa"
+              name="category"
               rules={[{ required: true, message: "Hãy nhập loại hàng hóa!" }]}
             >
               <Input />
@@ -104,7 +123,7 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
                 <Col span={16}>
                   <Form.Item
                     label="Tên"
-                    name={["hangSanXuat", 0]}
+                    name={["brand", "name"]}
                     required
                     rules={[
                       {
@@ -112,16 +131,16 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
                         message: "Hãy nhập tên hãng sản xuất!",
                       },
                     ]}
-                    labelCol={{ span: 5 }}
-                    wrapperCol={{ span: 19 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
                   >
                     <Input />
                   </Form.Item>
                   <Form.Item
                     label="Url ảnh"
-                    name={["hangSanXuat", 1]}
+                    name={["brand", "image"]}
                     labelCol={{ span: 5 }}
-                    wrapperCol={{ span: 19 }}
+                    wrapperCol={{ span: 20 }}
                     style={{
                       marginBottom: 0,
                     }}
@@ -158,7 +177,7 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Thông tin"
-              name="thongTin"
+              name="description"
               rules={[
                 { required: true, message: "Hãy nhập thông tin sản phẩm!" },
               ]}
@@ -167,7 +186,7 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Thông số"
-              name="thongSo"
+              name="specifications"
               rules={[
                 { required: true, message: "Hãy nhập thông số sản phẩm!" },
               ]}
@@ -176,13 +195,13 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
             </Form.Item>
             <Form.Item
               label="Giá"
-              name="gia"
+              name="price"
               wrapperCol={{ span: 12 }}
               rules={[{ required: true, message: "Hãy nhập giá sản phẩm!" }]}
             >
               <InputNumber
                 min={0}
-                addonAfter="₫"
+                addonAfter="VNĐ"
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -190,7 +209,7 @@ const AddProduct = ({ setModalChild, handleRefresh }) => {
             </Form.Item>
           </Col>
           <Col span={12} style={{ paddingLeft: 10 }}>
-            <h3 style={{ margin: 0 }}>Biến thể</h3>
+          <h3 style={{ margin: 0, textAlign: "center" }}>Biến thể</h3>
             {variants.map((variant) => (
               <div key={variant.key} style={{ marginBottom: 8 }}>
                 <Divider style={{ margin: 10 }} />

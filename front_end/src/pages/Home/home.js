@@ -1,17 +1,27 @@
 // pages/Home/Home.js
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Thêm useNavigate
 import "./Home.css";
-import SliderComponent from "../../components/SliderComponent/SliderComponent";
-import slider1 from '../../assets/images/slider1.jpg'
-import slider2 from '../../assets/images/slider2.jpg'
-import slider3 from '../../assets/images/slider3.jpg'
 
 export default function Home({ isLoggedIn }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const navigate = useNavigate(); // Khởi tạo navigate
+
+    // Đối tượng ánh xạ danh mục với đường dẫn
+    const categoryPaths = {
+        "Điện Thoại": "/phone",
+        "Laptop": "/laptop",
+        "Phụ kiện": "/accessories",
+        "Tai nghe": "/headphones",
+        "Dây sạc": "/cables",
+    };
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category);
+
+        // Điều hướng đến URL tương ứng
+        const path = categoryPaths[category] || "/"; // Nếu không có, điều hướng về trang chủ
+        navigate(path);
     };
 
     const categoryData = {
@@ -24,90 +34,37 @@ export default function Home({ isLoggedIn }) {
                 rating: 4.8,
                 sold: "60,1k"
             },
+            // Các sản phẩm khác
         ],
-        "Điện Thoại": [
-            {
-                id: 3,
-                image: "/images/samsung-galaxy.png",
-                name: "Samsung Galaxy S22",
-                price: "29.999.000₫",
-                rating: 4.5,
-                sold: "20k"
-            },
-            // Thêm sản phẩm khác cho danh mục "Điện Thoại"
-        ],
-        "Laptop": [
-            {
-                id: 4,
-                image: "/images/dell-xps.png",
-                name: "Laptop Dell XPS 15",
-                price: "50.000.000₫",
-                rating: 4.9,
-                sold: "15k"
-            },
-            // Thêm sản phẩm khác cho danh mục "Laptop"
-        ],
-        "Phụ Kiện": [
-            {
-                id: 5,
-                image: "/images/phone-case.png",
-                name: "Ốp lưng điện thoại",
-                price: "150.000₫",
-                rating: 4.6,
-                sold: "10k"
-            },
-            // Thêm sản phẩm khác cho danh mục "Phụ Kiện"
-        ],
-        "Tai Nghe": [
-            {
-                id: 6,
-                image: "/images/sony-headphones.png",
-                name: "Tai nghe Sony WH-1000XM4",
-                price: "8.000.000₫",
-                rating: 4.8,
-                sold: "5k"
-            },
-            // Thêm sản phẩm khác cho danh mục "Tai Nghe"
-        ],
-        "Dây Sạc": [
-            {
-                id: 7,
-                image: "/images/charging-cable.png",
-                name: "Dây sạc USB-C",
-                price: "200.000₫",
-                rating: 4.5,
-                sold: "8k"
-            },
-            // Thêm sản phẩm khác cho danh mục "Dây Sạc"
-        ],
+        "Điện Thoại": [ /* Dữ liệu các sản phẩm điện thoại */],
+        "Laptop": [ /* Dữ liệu các sản phẩm laptop */],
+        "Phụ kiện": [ /* Dữ liệu các sản phẩm phụ kiện */],
+        "Tai nghe": [ /* Dữ liệu các sản phẩm tai nghe */],
+        "Dây sạc": [ /* Dữ liệu các sản phẩm dây sạc */],
     };
 
     return (
-        <div>
-            
-                <div className="top-bar">
-                    
-                    <div className="search-bar">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm..." />
-                        <button className="search-button">🔍</button>
-                    </div>
+        <div className="home-container">
 
-                    <div className="auth-buttons">
-                        {isLoggedIn ? (
-                            <>
-                                <Link to="/cart" className="button">Xem Giỏ Hàng</Link>
-                                <Link to="/profile" className="button">Xem Profile</Link>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="button">Đăng Nhập</Link>
-                                <Link to="/register" className="button">Đăng Ký</Link>
-                            </>
-                        )}
-                    </div>
+            <div className="top-bar">
+                <div className="search-bar">
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+                    <button className="search-button">🔍</button>
                 </div>
-
-
+                <div className="auth-buttons">
+                    {isLoggedIn ? (
+                        <>
+                            <Link to="/cart" className="button">Xem Giỏ Hàng</Link>
+                            <Link to="/profile" className="button">Xem Profile</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" className="button">Đăng Nhập</Link>
+                            <Link to="/register" className="button">Đăng Ký</Link>
+                        </>
+                    )}
+                </div>
+            </div>
 
             <section className="product-categories">
                 <h2>Danh Mục Sản Phẩm</h2>

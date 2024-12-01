@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios
 import "./Login.css";
 import { Link } from "react-router-dom";
-// import AllApi from "../../api/api";
+import apiService from "../../api/api";
 // import { AuthContext } from "../../components/AuthContext/AuthContext";
 
 export default function LoginPage() {
@@ -44,24 +44,32 @@ export default function LoginPage() {
         };
 
         try {
-            const response = await axios.post("http://localhost:5000/users/login", user); // Gửi yêu cầu đến API
-
+            const response = await apiService.loginUser(user)
+              
+            // console.log(user.phoneNumber);
+            // console.log(user.password);
+            console.log(response.data.success);
+            console.log(response.data);
+            
             if (response.data.success) {
-                console.log(response);
-                // Xử lý thành công đăng nhập
-                if (response.data.data[0] === "admin") {
-                    localStorage.setItem("role", "admin");
+                if (response.data.role === "admin") {
+                    // Lưu token vào localStorage
+                    localStorage.setItem("authToken", response.data.token); 
+
+                    // Cập nhật role vào localStorage 
+                    localStorage.setItem("role", response.data.role);
+                    
                     window.location.href = "/admin"; // Chuyển hướng đến trang admin
                 } else {
                     window.location.href = "/"; // Chuyển hướng đến trang chủ
                 }
             } else {
                 const newErrors = { ...errors };
-                if (response.data.message === "Invalid phonenumber") {
-                    newErrors.phonenumber = "Số điện thoại không tồn tại!";
+                if (response.data.message === "User not found") {
+                    newErrors.phonenumber = "Số điện thoại chưa được đăng ký!";
                 }
-                if (response.data.message === "Wrong password") {
-                    newErrors.password = "Sai mật khẩu!";
+                if (response.data.message === "Invalid password") {
+                    newErrors.password = "Mật khẩu không chính xác!";
                 }
                 setErrors(newErrors);
             }

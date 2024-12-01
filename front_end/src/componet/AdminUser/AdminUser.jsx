@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { Button, Modal, Space, Table, message, Input } from "antd";
 import {
   DeleteFilled,
@@ -6,20 +7,32 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
-import { deleteUserAPI, getUsersAPI } from "./API";
+import apiService from "../../api/api";
 
 const AdminUser = () => {
   const [users, setUsers] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await getUsersAPI();
-        const usersData = response.data;
+        const token = localStorage.getItem('authToken'); // Lấy token từ localStorage
+    
+        if (!token) {
+          message.error('Bạn cần phải đăng nhập!');
+          return; // Nếu không có token, dừng lại và không gọi API
+        }
+    
+        const response = await apiService.getAllUsers();
+        const usersData = response.data.users;
         setUsers(usersData);
       } catch (error) {
         console.error(error);
-        message.error('Không thể lấy dữ liệu user');
+        message.error('Không thể lấy dữ liệu người dùng');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -124,24 +137,24 @@ const AdminUser = () => {
 
   const deleteUser = async (record) => {
     try {
-      await deleteUserAPI(record.id);
+      await apiService.deleteUser(record._id);
 
       const updatedUsers = users.filter(
-        (user) => user.id !== record.id
+        (user) => user._id !== record._id
       );
       setUsers(updatedUsers);
 
-      message.success(`Đã xóa user: ${record.id}`);
+      message.success(`Đã xóa user: ${record._id}`);
     } catch (error) {
       console.error(error);
-      message.error(`Xóa user thất bại: ${record.id}`);
+      message.error(`Xóa user thất bại: ${record._id}`);
     }
   };
 
   const { confirm } = Modal;
   const showDeleteConfirm = (user) => {
     confirm({
-      title: `Xác nhận xóa user ${user.id}!`,
+      title: `Xác nhận xóa user ${user._id}!`,
       icon: <ExclamationCircleFilled />,
       content: `User name: ${user.userName}`,
       onOk() {
@@ -152,19 +165,28 @@ const AdminUser = () => {
   };
   const columns = [
     {
+      title: "STT", 
+      dataIndex: "stt",
+      key: "stt", 
+      render: (text) => text,
+      width: '5%', // Chỉnh độ rộng của cột STT
+    },
+    {
       title: "ID",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
       ellipsis: true,
-      sorter: (a, b) => a.id - b.id,
+      sorter: (a, b) => a._id - b._id,
       sortDirections: ['descend', 'ascend'],
-      ...getColumnSearchProps('id'),
+      width: '15%', // Chỉnh độ rộng của cột ID
+      ...getColumnSearchProps('_id'),
     },
     {
       title: "User name",
       dataIndex: "userName",
-      key: "name",
+      key: "userName",
       ellipsis: true,
+      width: '20%', // Chỉnh độ rộng của cột User name
       ...getColumnSearchProps('userName'),
     },
     {
@@ -172,6 +194,7 @@ const AdminUser = () => {
       dataIndex: "phoneNumber",
       key: "phoneNumber",
       ellipsis: true,
+      width: '20%', // Chỉnh độ rộng của cột Phone number
       ...getColumnSearchProps('phoneNumber'),
     },
     {
@@ -179,10 +202,13 @@ const AdminUser = () => {
       dataIndex: "diaChi",
       key: "diaChi",
       ellipsis: true,
+      width: '30%', // Chỉnh độ rộng của cột Địa chỉ
       ...getColumnSearchProps('diaChi'),
     },
     {
-      width: 62,
+      title: "Actions", // Cột này để chứa các hành động
+      key: "actions",
+      width: '10%', // Chỉnh độ rộng của cột Actions
       render: (_, record) => (
         <Button
           style={{ transform: "scale(1.5,1.5)" }}
@@ -199,11 +225,19 @@ const AdminUser = () => {
       ),
     },
   ];
+  
   return (
-    <div>
+    <div >
       <Table
         columns={columns}
-        dataSource={users}
+        loading={loading}
+        dataSource={users ? users.map((user, index) => ({ ...user, key: user._id, stt: index + 1 })) : []}
+        pagination={{
+          pageSizeOptions: ['5', '10', '15'],
+          showSizeChanger: true, 
+          defaultPageSize: 5, 
+          style: { marginBottom: "20px" }, 
+        }}
       />
     </div>
   );

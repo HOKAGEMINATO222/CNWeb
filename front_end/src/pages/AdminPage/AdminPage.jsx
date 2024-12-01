@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import { UserOutlined, ProductOutlined, BellOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Flex, Menu } from "antd";
 import AdminUser from "../../componet/AdminUser/AdminUser";
-// import AdminProduct from "../../componet/AdminProduct/AdminProduct";
+import AdminProduct from "../../componet/AdminProduct/AdminProduct";
 import boxImage from "./box.png";
-// import AdminOrder from "../../componet/AdminOrder/AdminOrder";
+import AdminOrder from "../../componet/AdminOrder/AdminOrder";
+import AdminProfile from "../../componet/AdminProfile/AdminProfile";
 import styles from "./AdminPage.module.css";
 // import useSignalR from "../../components/useSignalR/useSignalR";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
+import { InfoCircleOutlined } from '@ant-design/icons';
+import apiService from "../../api/api";
+
 
 const logout = () => {
   console.log("User logged out");
@@ -31,11 +35,13 @@ const items = [
   getItem("Sản phẩm", "products", <ProductOutlined />),
   getItem("Người dùng", "users", <UserOutlined />),
   getItem("Đơn hàng", "orders", <img src={boxImage} alt="Order" width={14} />),
+  getItem("Thông tin", "profile", <InfoCircleOutlined />)
 ];
 const Admin = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
-    // if (role !== "admin") window.location.href = "/";
+
+    if (role !== "admin") window.location.href = "/";
 
   });
   const [visible, setVisible] = useState(false);
@@ -65,10 +71,12 @@ const Admin = () => {
     switch (key) {
       case "users":
         return <AdminUser />;
-      // case "products":
-      //   return <AdminProduct />;
-      // case "orders":
-      //   return <AdminOrder />;
+      case "products":
+        return <AdminProduct />;
+      case "orders":
+        return <AdminOrder />;
+      case "profile":
+        return <AdminProfile />;
       default:
         return <></>;
     }
@@ -107,7 +115,7 @@ const Admin = () => {
 
         </div>
       </header>
-      <div style={{ display: "flex", paddingTop: "60px" }}>
+      <div>
         <div className={styles.menuContainer}>
           <Menu
             mode="inline"
@@ -117,7 +125,11 @@ const Admin = () => {
             onClick={handleOnClick}
           />
         </div>
-        <div className={styles.content}>{renderPage(keySelected)}</div>
+        <div className={styles.content}>
+          <div style={{ height: 'calc(100vh - 120px - 40px)', overflowY: 'auto' }}>
+            {renderPage(keySelected)}
+          </div>
+        </div>
       </div>
     </>
   );

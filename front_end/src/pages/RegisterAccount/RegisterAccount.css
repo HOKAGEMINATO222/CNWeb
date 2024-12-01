@@ -6,11 +6,12 @@ body {
 }
 
 .register-container {
-    
+    overflow: auto;
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-left: 0px;
+   
+    margin-left: 20px;
 }
 
 .login-form {

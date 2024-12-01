@@ -5,30 +5,70 @@ import {
 } from "@ant-design/icons";
 import {
   Button,
+  Card,
   Col,
   Divider,
   Dropdown,
+  Menu,
   Modal,
   Row,
   Table,
   Tag,
   message,
 } from "antd";
-import React, { useState } from "react";
-import { mockOrder, mockUser, mockProduct, mockVariant } from "./mockData";
-import AllApi from "../../api/api";
 
-const tagStyle = {
-  height: "38px",
-  lineHeight: "38px",
-  fontSize: "16px",
-};
+import React, { useState, useEffect } from 'react';
+import apiService from "../../api/api";
+
+
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(value);
 };
+
+const DeliveryStatusComponent = ({ deliveryStatus }) => {
+  let statusColor;
+
+  switch (deliveryStatus) {
+    case 'Processing':
+      statusColor = 'orange';
+      break;
+    case 'Shipped':
+      statusColor = 'blue';
+      break;
+    case 'Delivered':
+      statusColor = 'green';
+      break;
+    case 'Cancelled':
+      statusColor = 'red';
+      break;
+    default:
+      statusColor = 'gray';
+  }
+
+  return <Tag color={statusColor}>{deliveryStatus}</Tag>;
+};
+
+const PaymentStatusComponent = ({paymentStatus}) => {
+  let statusColor;
+  switch (paymentStatus) {
+    case 'Pending':
+      statusColor = 'orange';
+      break;
+    case 'Completed':
+      statusColor = 'green';
+      break;
+    case 'Failed':
+       statusColor ='red';
+       break;
+    default:
+      statusColor = 'gray';
+  }
+  return <Tag color={statusColor}>{paymentStatus}</Tag>;
+};
+
 function formatDate(isoString) {
   // Chuyển đổi chuỗi ISO 8601 thành đối tượng Date
   const date = new Date(isoString);
@@ -42,16 +82,16 @@ function formatDate(isoString) {
   const seconds = String(date.getSeconds()).padStart(2, "0");
 
   // Định dạng thành chuỗi theo định dạng DD/MM/YYYY HH:MM:SS
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
+  return `${hours}:${minutes}:${seconds}  ${day}/${month}/${year} `;
 }
 
 const Row2 = ({ label, value }) => (
   <Row gutter={[16, 16]}>
     <Col span={1}></Col>
-    <Col span={4} style={{ fontSize: 16, color: "#929292" }}>
+    <Col span={5} style={{ fontSize: 16, color: "#929292" }}>
       {label}:
     </Col>
-    <Col span={16} style={{ fontSize: 18 }}>
+    <Col span={18} style={{ fontSize: 18 }}>
       {value}
     </Col>
   </Row>
@@ -59,178 +99,152 @@ const Row2 = ({ label, value }) => (
 
 const Row1 = ({ label, value }) => (
   <Row gutter={[16, 16]}>
-    <Col span={4} style={{ fontSize: 16 }}>
+    <Col span={6} style={{ fontSize: 16, fontWeight: "bold"  }}>
       {label}:
     </Col>
-    <Col span={20} style={{ fontSize: 18 }}>
+    <Col span={18} style={{ fontSize: 18 }}>
       {value}
     </Col>
   </Row>
 );
-const statusItems = [
-  {
-    label: "Đã thanh toán",
-    key: true,
-  },
-  {
-    label: "Chưa thanh toán",
-    key: false,
-  },
-];
-const deliveryStatusItems = [
-  "Đang chuẩn bị",
-  "Đang giao",
-  "Giao thành công",
-];
 
-const { confirm } = Modal;
 const OrderDetails = ({ order, handleRefresh }) => {
-  var product = mockProduct;
-  var variant = mockVariant;
-  var user = order.user;
-  const [status, setStatus] = useState(order.daThanhToan);
-  const [deliveryStatus, setDeliveryStatus] = useState(order.tinhTrangDonHang);
-  var chiTietDonHangs = order.chiTietDonHangs;
+  const [orderStatus, setOrderStatus] = useState(order.orderStatus); 
+  const { userId } = order;
+  const user = userId; 
   const columns = [
     {
-      title: "Tên",
-      dataIndex: ["variant", "hangHoa", "tenHangHoa"],
+      title: "Sản phẩm",
+      dataIndex: "productName", 
       key: "name",
-      width: "200px",
+      render: (_, record) => record.productId.name
     },
     {
-      title: "Phiên bản",
-      dataIndex: ["variant", "color"],
-      key: "age",
-      width: 80,
-    },
-    {
-      title: "Giá",
-      dataIndex: "",
-      key: "price",
-      render: (record) => formatCurrency(record.total / (1 - record.giamGia)),
-      align: "right",
+      title:  "Mẫu",
+      dataIndex: "Mẫu",
+      key: "mau",
+      render: (_, record) => record.variant.color
     },
     {
       title: "Số lượng",
-      dataIndex: "soLuong",
-      key: "soLuong",
-      align: "right",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (_, record) => {
+        // Tính tổng số lượng từ tất cả các biến thể (variant)
+        const totalQuantity = record.variant?.quantity || 0;
+        return totalQuantity;
+      },
     },
     {
-      title: "Giảm giá",
-      dataIndex: ["variant", "sale"],
-      key: "giamGia",
-      align: "right",
+      title: "Đơn giá",
+      dataIndex: "price",
+      key: "price",
+      render: (_, record) => {
+        // Tính đơn giá sau khi trừ đi sale của mẫu
+        const sale = record.variant?.sale || 0; 
+        const discountedPrice = record.productId.price - (record.productId.price * (sale / 100));
+        return formatCurrency(discountedPrice); 
+      },
     },
     {
-      title: "Thành tiền",
+      title: "Tổng tiền",
       dataIndex: "total",
       key: "total",
-      render: (text, record) => formatCurrency(text),
-      align: "right",
-    },
+      render: (_, record) => {
+        // Tính đơn giá sau khi trừ đi sale của mẫu
+        const sale = record.variant?.sale || 0; 
+        const discountedPrice = record.productId.price - (record.productId.price * (sale / 100));
+        const total = discountedPrice * record.variant.quantity
+        return formatCurrency(total); 
+      },
+    }
   ];
 
-  const handleClickDeliveryStatus = () => {
-    if (deliveryStatus === 2) message.info("Đơn hàng đã được giao");
-    else {
-      confirm({
-        title: `Xác nhận thay đổi trạng thái đơn hàng sang "${deliveryStatusItems[deliveryStatus+1]}"!`,
-        icon: <ExclamationCircleFilled />,
-        async onOk() {
-          try {
-            const response = await AllApi.updateOrderStatus(order.maDonHang);
-            const newDeliveryStatus = deliveryStatus + 1;
-            setDeliveryStatus(newDeliveryStatus);
-            if (newDeliveryStatus === 2) {
-              setStatus(true);
-            }
-            handleRefresh();
-          } catch (error) {
-            console.log(error);
-          }
-        },
-        onCancel() {},
-      });
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={() => showConfirm("Processing")}>Đang xử lý</Menu.Item>
+      <Menu.Item onClick={() => showConfirm("Shipped")}>Đã gửi</Menu.Item>
+      <Menu.Item onClick={() => showConfirm("Delivered")}>Đã giao</Menu.Item>
+    </Menu>
+  );
+
+    // Hàm để thay đổi trạng thái giao hàng
+  const handleChangeDeliveryStatus = async (orderId, status) => {
+    try {
+      const response = await apiService.updateOrderAdmin(orderId, status);
+      
+      if (response.status === 200) {
+        message.success('Trạng thái đơn hàng đã được cập nhật');
+        console.log('Order status updated:', response.data.order);
+  
+        // Cập nhật trạng thái trong state nếu cần
+        setOrderStatus(status); 
+        handleRefresh(); // Làm mới dữ liệu
+      } else {
+        // Xử lý trường hợp API không trả về status 200
+        console.error('Error updating order status:', response.data?.message || 'Lỗi không xác định');
+        message.error(response.data?.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
+      }
+    } catch (error) {
+      // Xử lý lỗi kết nối hoặc lỗi không xác định
+      console.error('Error:', error);
+      message.error('Lỗi kết nối hoặc xử lý yêu cầu');
     }
   };
-  const StatusComponent = (props) => {
-    return (
-      <div>
-        {props.status ? (
-          <Tag bordered={false} color="success" style={tagStyle}>
-            Đã thanh toán
-          </Tag>
-        ) : (
-          <Tag bordered={false} color="processing" style={tagStyle}>
-            Chưa thanh toán
-          </Tag>
-        )}
-      </div>
-    );
+
+  // Hàm mở Modal xác nhận thay đổi trạng thái
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newStatus, setNewStatus] = useState(null);
+
+  const showConfirm = (status) => {
+    setNewStatus(status);
+    setIsModalVisible(true);
   };
-  const DeliveryStatusComponent = (props) => {
-    var tag = null;
-    switch (props.deliveryStatus) {
-      case 2:
-        tag = (
-          <Tag bordered={false} color="success" style={tagStyle}>
-            Giao thành công
-          </Tag>
-        );
-        break;
-      case 1:
-        tag = (
-          <Tag bordered={false} color="processing" style={tagStyle}>
-            Đang giao
-          </Tag>
-        );
-        break;
-      case 0:
-        tag = (
-          <Tag bordered={false} color="processing" style={tagStyle}>
-            Đang chuẩn bị
-          </Tag>
-        );
-        break;
-      default:
-        tag = (
-          <Tag bordered={false} color="processing" style={tagStyle}>
-            Đơn hàng đã bị hủy
-          </Tag>
-        );
-    }
-    return tag;
+
+  const handleOk = () => {
+    handleChangeDeliveryStatus(order._id, newStatus); 
+    setIsModalVisible(false);
   };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {setOrderStatus(order.orderStatus);}, [order.orderStatus]); 
+
   return (
     <>
       <h2>Đơn hàng</h2>
-      <div style={{ width: 800, padding: "0 20px 0 20px" }}>
-        <Row1 label="Mã" value={order.maDonHang} />
-        <Row1 label="Ngày đặt" value={formatDate(order.ngayDat)} />
+      <div style={{ width: '70vw', padding: "10px 20px",}}>
+        <Row1 label="Mã" value={order._id} />
+        <Row1 label="Ngày đặt" value={formatDate(order.createdAt)} />
         <Row1
-          label="Ngày giao"
-          value={order.ngayGiao ? formatDate(order.ngayGiao) : "Chưa xác định"}
+          label="Hình thức thanh toán"
+          value={order.paymentMethod}
         />
 
         <Row1 label="Người mua" value="" />
         <Row2 label="Tên" value={user.userName} />
-        <Row2 label="Id" value={user.id} />
         <Row2 label="Số điện thoại" value={user.phoneNumber} />
         <Row2 label="Địa chỉ" value={user.diaChi} />
 
-        <Row1 label="Sản phẩm" value="" />
-
+        <Row1 label="Sản phẩm" />
         <Table
-          dataSource={chiTietDonHangs}
+          dataSource={order.items}
           columns={columns}
-          size="small"
+          size="large"
+          style={{ width: '100%' }} 
           pagination={false}
           summary={(pageData) => {
             let sum = 0;
-            pageData.forEach(({ total }) => {
-              sum += total;
+
+            // Tính tổng tiền cho từng sản phẩm trong pageData
+            pageData.forEach(({ productId, variant, quantity }) => {
+              const sale = variant?.sale || 0; 
+              const discountedPrice = productId.price - (productId.price * (sale / 100));
+              const totalProduct = discountedPrice * quantity;
+              
+              sum += totalProduct; // Cộng tổng tiền của sản phẩm vào tổng tiền đơn hàng
             });
             return (
               <Table.Summary.Row>
@@ -248,30 +262,39 @@ const OrderDetails = ({ order, handleRefresh }) => {
             );
           }}
         />
-        <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
+        <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
           <Col span={6} style={{ fontSize: 16, fontWeight: "bold" }}>
             Tình trạng giao hàng:
           </Col>
-          <Col span={16} style={{ fontSize: 18 }}>
-            <DeliveryStatusComponent deliveryStatus={deliveryStatus} />
-            <Button
-              icon={<EditOutlined />}
-              onClick={handleClickDeliveryStatus}
-              style={{ width: "fit-content" }}
-            >
-              Thay đổi
-            </Button>
+          <Col span={6} style={{ fontSize: 18 }}>
+            <DeliveryStatusComponent deliveryStatus={orderStatus} />
+          </Col>
+          <Col span={12} style={{ fontSize: 18 }}>
+            <Dropdown overlay={menu}>
+              <Button icon={<EditOutlined />}>Thay đổi trạng thái</Button>
+            </Dropdown>
           </Col>
         </Row>
-        <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
+        <Row gutter={[16, 16]} style={{ marginTop: 20, marginBottom: 20 }}>
           <Col span={6} style={{ fontSize: 16, fontWeight: "bold" }}>
             Trạng thái:
           </Col>
           <Col span={16} style={{ fontSize: 18 }}>
-            <StatusComponent status={status} />
+            <PaymentStatusComponent paymentStatus={order.paymentStatus}/>
           </Col>
         </Row>
       </div>
+      <Modal
+        title="Xác nhận thay đổi trạng thái"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        icon={<ExclamationCircleFilled />}
+        okText="Xác nhận"
+        cancelText="Hủy"
+      >
+        <p>Bạn có chắc chắn muốn thay đổi trạng thái giao hàng thành "{newStatus}"?</p>
+      </Modal>
     </>
   );
 };

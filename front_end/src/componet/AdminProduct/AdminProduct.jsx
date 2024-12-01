@@ -9,26 +9,36 @@ import {
 import Highlighter from 'react-highlight-words';
 import AddProduct from "./AddProduct";
 import ProductDetails from "./ProductDetails";
-import { deleteProductAPI, getProductsAPI } from "./API";
+import apiService from "../../api/api";
 
 const AdminProduct = () => {
   const [refresh, setRefresh] = useState(false);
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
   const [modalChild, setModalChild] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await getProductsAPI()
-        const productsData = response.data;
-        setProducts(productsData);
-        console.log(productsData);
+        const response = await apiService.getAllProducts();
+        const rawData = response.data.products || []; 
+        if (Array.isArray(rawData)) {
+          setProducts(rawData); // Cập nhật state sản phẩm
+        } else {
+          console.error("Dữ liệu không phải mảng:", rawData);
+          setProducts([]);  // Trả về mảng rỗng nếu dữ liệu không hợp lệ
+        }
+      
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching products:", error);
         message.error('Không thể lấy dữ liệu sản phẩm');
+        setProducts([]); 
+      } finally {
+         setLoading(false);
       }
     };
-
     fetchData();
   }, [refresh]);
   const onRefresh = () => {
@@ -133,79 +143,78 @@ const AdminProduct = () => {
 
   const deleteProduct = async (record) => {
     try {
-      await deleteProductAPI(record.product);
-  
+      console.log('Record:', record);
+      await apiService.deleteProduct(record._id); 
       const updatedProducts = products.filter(
-        (product) => product.maHangHoa !== record.maHangHoa
+        (product) => product._id !== record._id
       );
       setProducts(updatedProducts);
-      message.success(`Đã xóa sản phẩm: ${record.tenHangHoa}`);
+      message.success(`Đã xóa sản phẩm: ${record.name}`);
     } catch (error) {
-      console.error(error);
-      message.error(`Xóa sản phẩm thất bại: ${record.tenHangHoa}`);
+      console.error('Lỗi khi xóa sản phẩm:', error);
+      message.error(`Xóa sản phẩm thất bại: ${record.name}`);
     }
   };
   
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(value);
+  
+
+  const getSoLuong = (Variants) => {
+    if (Array.isArray(Variants.variants)) {
+      // Tính tổng số lượng của tất cả các variant
+      return Variants.variants.reduce((acc, variant) => acc + variant.quantity, 0);
+    }
   };
+  
 
-  const getSoLuong = (record) => {
-    return record.variants.reduce((total, variant) => total + variant.quantity, 0)
-  }
-
-
+  
   const { confirm } = Modal;
   const showDeleteConfirm = (product) => {
     confirm({
-      title: `Xác nhận xóa sản phẩm ${product.tenHangHoa}!`,
+      title: `Xác nhận xóa sản phẩm ${product.name}!`,
       icon: <ExclamationCircleFilled />,
-      content: `Mã sản phẩm: ${product.maHangHoa}`,
+      content: `Mã sản phẩm: ${product._id}`,
       onOk() {
         deleteProduct(product);
       },
       onCancel() {},
     });
   };
-  const addProduct = () => {};
+ 
   const columns = [
     {
       title: "Mã",
-      dataIndex: "maHangHoa",
-      key: "ma",
+      dataIndex: "_id",
+      key: "MaHangHoa",
       ellipsis: true,
-      sorter: (a, b) => a.maHangHoa.localeCompare(b.maHangHoa),
+      sorter: (a, b) => a._id.localeCompare(b._id),
       sortDirections: ['descend', 'ascend'],
-      ...getColumnSearchProps('maHangHoa'),
-    },
-    {
-      title: "Tên",
-      dataIndex: "tenHangHoa",
-      key: "ten",
-      ellipsis: true,
-      sorter: (a, b) => a.tenHangHoa.localeCompare(b.tenHangHoa),
-      sortDirections: ['descend', 'ascend'],
-      ...getColumnSearchProps('tenHangHoa'),
+      ...getColumnSearchProps('_id'),
     },
     {
       title: "Loại",
-      dataIndex: "loaiHangHoa",
-      key: "loaiHangHoa",
+      dataIndex: "category",
+      key: "LoaiHangHoa",
       ellipsis: true,
-      sorter: (a, b) => a.loaiHangHoa.localeCompare(b.loaiHangHoa),
+      sorter: (a, b) => a.category.localeCompare(b.category),
       sortDirections: ['descend', 'ascend'],
-      ...getColumnSearchProps('loaiHangHoa'),
+      ...getColumnSearchProps('category'),
+    },
+    {
+      title: "Tên",
+      dataIndex: "name",
+      key: "TenHangHoa",
+      ellipsis: true,
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      sortDirections: ['descend', 'ascend'],
+      ...getColumnSearchProps('name'),
     },
     {
       title: "Giá",
-      dataIndex: "gia",
-      key: "gia",
-      render: (text) => formatCurrency(text),
+      dataIndex: "price",
+      key: "Gia",
+      render: (text) => text.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
       ellipsis: true,
-      sorter: (a, b) => a.gia - b.gia,
+      sorter: (a, b) => a.price - b.price,
       sortDirections: ['descend', 'ascend'],
     },
     {
@@ -213,17 +222,19 @@ const AdminProduct = () => {
       key: "soLuong",
       render: (record) => getSoLuong(record),
       ellipsis: true,
+      sorter: (a, b) => getSoLuong(b) - getSoLuong(a),
     },
     {
       title: "Đánh giá",
-      dataIndex: "ratings",
+      dataIndex: "rating",
       key: "rating",
       sorter: (a, b) => a.rating - b.rating,
       sortDirections: ['descend', 'ascend'],
       ellipsis: true,
     },
     {
-      width: 62,
+      title: "Action",
+      width: 76,
       render: (_, record) => (
         <Button
           style={{transform: "scale(1.5,1.5)"}}
@@ -269,7 +280,7 @@ const AdminProduct = () => {
         onRow={(record, rowIndex) => {
           return {
             onClick: () => {
-              setModalChild(<ProductDetails product={record} setModalChild={setModalChild} handleRefresh={onRefresh} />);
+              setModalChild(<ProductDetails products={record} setModalChild={setModalChild} handleRefresh={onRefresh} />);
             },
             onMouseEnter: (event) => {
               event.currentTarget.style.cursor = "pointer";
@@ -281,6 +292,15 @@ const AdminProduct = () => {
         }}
         columns={columns}
         dataSource={products}
+        rowKey="_id"
+        loading={loading}
+        pagination={{
+          pageSizeOptions: ['5', '10', '15'], 
+          showSizeChanger: true, 
+          defaultPageSize: 5, 
+          style: { marginBottom: "20px" }, 
+        }}
+        
       />
     </div>
   );
