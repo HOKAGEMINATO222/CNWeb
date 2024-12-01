@@ -116,6 +116,8 @@ body {
 }
 
 .avatar {
+    position: relative;
+    top: 60px;
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -212,7 +214,7 @@ body {
 
 .pro5-header-bar {
     position: fixed;
-    width: 70vw;
+    width: 100vw;
     background-color: #f0f0f0;
     top: 0px;
     display: flex;
