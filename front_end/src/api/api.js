@@ -44,9 +44,10 @@ const apiService = {
   getProductById: (productId) => apiInstance.get(`product/getProductById/${productId}`),
 
   // **Comment and Rating APIs**
-  addComment: (commentData) => apiInstance.post("/product/comment", commentData),
-  addRating: (ratingData) => apiInstance.post("/product/review", ratingData),
-  
+  addReview: (productId, userId, stars, text) => apiInstance.post(`/product/${productId}/review`, {productId, userId, stars, text}),
+  addComment: (productId, userId, text, rating) => apiInstance.post(`/comments`, { productId, userId, text, rating }),
+  getComments: (productId) => apiInstance.get(`/comments/${productId}`),
+
   // **User APIs**
   registerUser: (newUser) => apiInstance.post("/register", newUser),
   loginUser: (user) => apiInstance.post("/login", user),
