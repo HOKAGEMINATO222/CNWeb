@@ -1,14 +1,14 @@
 import axios from "axios";
 
 // Base URL local cho API
-export const base_url = "http://localhost:5000";
-
+// export const base_url = "http://localhost:5000";
+export const base_url = "https://cnweb-backend-6mh8.onrender.com";
 // Cấu hình axios instance
 axios.defaults.withCredentials = true;
 
 const apiInstance = axios.create({
   baseURL: base_url,
-  timeout: 10000, // Timeout 10 giây
+  timeout: 30000, // Timeout 10 giây
 });
 
 // Interceptor để thêm token vào header Authorization

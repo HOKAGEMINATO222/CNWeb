@@ -10,7 +10,7 @@ const app = express();
 require('dotenv').config();
 
 const corsOptions = {
-    origin: 'http://localhost:3000',  // Chỉ định origin của frontend
+    origin: 'https://web-hitech.firebaseapp.com/',  // Chỉ định origin của frontend
     methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT '],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,  // Cho phép gửi cookies hoặc JWT

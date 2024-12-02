@@ -197,6 +197,7 @@ const Checkout = () => {
                                             </div>
                                         ))}
                                     </div>
+                                    
                                     <div className="date-form">
                                         <div className="date-inf" style={{ marginTop: '10px' }}>
                                             <p>Ngày đặt hàng: {new Date(item.updatedAt).toLocaleDateString('vi-VN')}</p>
