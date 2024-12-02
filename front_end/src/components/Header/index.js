@@ -97,7 +97,7 @@ function Header() {
                 </Link>
                 <div className="menu-list">
                     <div className="shop-cart">
-                        <Link to="/order" className="shop-cart">
+                        <Link to="/cart" className="shop-cart">
                             <div className="box-icon">
                                 <div className='my-icon'>
                                     <FontAwesomeIcon icon={faBagShopping} className='fa-h-24px' />
