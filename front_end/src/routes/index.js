@@ -8,6 +8,8 @@ import userLayout from '../pages/userLayout/userLayout';
 import adminLayout from '../pages/AdminPage/adminLayout';
 import Category from '../pages/Category/Category'
 import UserProfile from '../pages/UserProfile/UserProfile';
+import CheckOrder from '../pages/CheckOrder/CheckOrder';
+import Checkout from '../pages/Checkout/Checkout';
 
 // public Routes
 
@@ -17,7 +19,6 @@ const publicRoutes=[
     {path: '/register', component:RegisterPage, layout: userLayout},
     {path: '/login', component:LoginPage, layout: userLayout},
     {path: '/order',component:Order, layout: userLayout},
-    {path: '/admin', component: Admin, layout: adminLayout},
     {path: '/điện thoại', component: Category, layout: userLayout, childPath: ':brandName', category: 'Điện thoại'},
     {path: '/bàn phím', component: Category, layout: userLayout, childPath: ':brandName', category: 'Bàn Phím'},
     {path: '/laptop', component: Category, layout: userLayout, childPath: ':brandName', category: 'Laptop'},
@@ -26,12 +27,13 @@ const publicRoutes=[
     {path: '/phụ kiện', component: Category, layout: userLayout, childPath: ':brandName', category: 'Phụ Kiện'},
     {path: '/tai nghe', component: Category, layout: userLayout, childPath: ':brandName', category: 'Tai Nghe'},
     {path: '/profile',component: UserProfile, layout: userLayout},
-    // {path: '/checkout', component: Checkout, layout: userLayout},
-    // {path: '/check', component: CheckOrder, layout: userLayout},
+    {path: '/checkout', component: Checkout, layout: userLayout},
+    {path: '/check', component: CheckOrder, layout: userLayout},
+    {path: '/admin', component: Admin, layout: adminLayout},
 ];
 
 const privateRoutes=[
-
+    
 
 ];
 

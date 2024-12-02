@@ -7,10 +7,10 @@ function DescriptionProduct({ product }) {
     return (
         <div className='product'>
             <div className="product-nav">
-                <div className={`product-nav-box ${activeTab === 'info' ? 'fade' : ''}`} onClick={() => setActiveTab('info')}>
+                <div className={`product-nav-box ${activeTab === 'info' ? 'active' : ''}`} onClick={() => setActiveTab('info')}>
                     Thông tin sản phẩm
                 </div>
-                <div className={`product-nav-box ${activeTab === 'specs' ? 'fade' : ''}`} onClick={() => setActiveTab('specs')}>
+                <div className={`product-nav-box ${activeTab === 'specs' ? 'active' : ''}`} onClick={() => setActiveTab('specs')}>
                     Thông số kỹ thuật
                 </div>
             </div>
@@ -21,7 +21,7 @@ function DescriptionProduct({ product }) {
                     )
                 )}
                 {activeTab === 'specs' && (
-                    product.specification.map((element, index) => 
+                    product.specifications.map((element, index) => 
                     <p key={index}>{element}</p>
                 ))}
             </div>

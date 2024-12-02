@@ -19,7 +19,7 @@ function RecommendedProducts({ category, productId }) {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const productData = await apiService.getProductById(productId);
+        const productData = (await apiService.getProductById(productId)).data;
         setProduct(productData);
         setLoading(false);
       } catch (error) {
@@ -30,7 +30,9 @@ function RecommendedProducts({ category, productId }) {
 
     const fetchRelatedProducts = async () => {
       try {
-        const products = await apiService.getRelatedProducts(productId);
+        
+        const products = (await apiService.getRelatedProducts(productId)).data;
+        console.log('Fetching product with ID:', products);
         setRelatedProducts(products);
       } catch (error) {
         console.error("Error fetching related products:", error);
@@ -106,7 +108,7 @@ function RecommendedProducts({ category, productId }) {
                   {relatedProducts.map((product, index) => (
                     <div key={index} className="swiper-slide">
                       <Item
-                        id={product.id}
+                        id={product._id}
                         name={product.name}
                         image={product.variants[0]?.image}
                         sale={product.variants[0]?.sale}

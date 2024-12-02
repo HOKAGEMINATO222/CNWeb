@@ -297,7 +297,7 @@ function Category(props) {
             return (
               <Item
                 key={index}
-                id={product.id}
+                id={product._id}
                 name={product.name}
                 image={product.variants[0].image}
                 sale={product.variants[0].sale}

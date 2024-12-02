@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping,faCheck, faSquare } from '@fortawesome/free-solid-svg-icons'
 import {useNavigate} from'react-router-dom';
 import './Order.css';
+import { MdDelete } from "react-icons/md";
 
 const Order = () => {
     const { cart, addToCart, removeFromCart, selectedItems, setSelectedItems } = useContext(CartContext);
@@ -83,7 +84,7 @@ const Order = () => {
                                 <div className="cart-item-details">
                                     <h2>{item.name}</h2>
                                     <p>Màu sắc: {item.selectedVariant.color || 'N/A'}</p>
-                                    <p>Giá: {formatPrice(item.newPrice)}</p>
+                                    <p>Giá: {formatPrice(item.price)}</p>
 
                                 </div>
                             
@@ -96,7 +97,10 @@ const Order = () => {
                                             <button onClick={() => handleQuantityChange(item.id, 1)}>+</button>
                                         
                                         </div>
-                                        <button className="delete-product" onClick={() => handleRemoveFromCart(item.id)}>Xóa</button>
+                                        <button className="delete-product"  onClick={() => handleRemoveFromCart(item.id)}>Xóa
+                                            <MdDelete style={{fontSize:'27px'}}/>
+                                        </button>
+                                        
                                     </div>
                                 
                                     <button className="total-price">Đơn giá: {formatPrice(calculateTotalPrice(item))}</button>

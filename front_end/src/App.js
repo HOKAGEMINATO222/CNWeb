@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { publicRoutes } from './routes';
+import { publicRoutes, privateRoutes } from './routes';
 import { CartProvider } from './components/CartContext/CartContext';
 import { AuthProvider } from './components/AuthContext/AuthContext';
 

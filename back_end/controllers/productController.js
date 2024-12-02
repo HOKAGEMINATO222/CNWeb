@@ -64,5 +64,31 @@ const getProductById = async (req, res) => {
   }
 };
 
+// Lấy sản phẩm liên quan
 
-module.exports = {createProduct, getProducts, getProductById };
+const getRelatedProducts = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+      // Tìm sản phẩm hiện tại
+      const product = await ProductModel.findById(productId);
+      if (!product) {
+          return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+      }
+
+      // Lấy danh sách sản phẩm liên quan dựa trên cùng danh mục
+      const relatedProducts = await ProductModel.find({
+          category: product.category, // Lọc theo danh mục
+          _id: { $ne: productId },    // Loại bỏ sản phẩm hiện tại
+      }).limit(10); // Giới hạn 5 sản phẩm liên quan
+
+      res.status(200).json(relatedProducts);
+  } catch (error) {
+      console.error('Lỗi khi lấy sản phẩm liên quan:', error);
+      res.status(500).json({ message: 'Đã xảy ra lỗi máy chủ' });
+  }
+};
+
+
+
+module.exports = {createProduct, getProducts, getProductById, getRelatedProducts };

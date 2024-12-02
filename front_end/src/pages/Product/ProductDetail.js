@@ -74,7 +74,7 @@ export default function ProductDetail() {
             <Breadcrumbs product={product} category={product.category} />
             {product && <ProductDisplay product={product} />}
             <DescriptionProduct product={product} />
-            <RecommendedProducts category={product.category} productId={product.id} />
+            <RecommendedProducts category={product.category} productId={product._id} />
             <div ref={popupRef}></div>
             <CommentAndRating onOpenPopup={openPopup} product={product} />
             {isPopupOpen  && (

@@ -117,7 +117,7 @@ function ProductDisplay(props) {
                    <p className="item-price-new">{formatPrice(product.price * (1 - product.variants[selectedVariantIndex].sale/100))}</p>
                    <p className="item-price-old">{formatPrice(product.price)}</p>
                    <div className="item-price-percent">
-                     <p className="item-rice-percent-detail">
+                     <p className="item-rice-percent-detail" style={{color:'red'}}>
                        Giảm &nbsp;
                        {product.variants[selectedVariantIndex].sale}%
                      </p>

@@ -48,6 +48,8 @@ const apiService = {
 
   // **Product APIs**//
   getProductById: (productId) => apiInstance.get(`/product/${productId}`),
+  // Lấy danh sách sản phẩm liên quan
+  getRelatedProducts: (productId) => apiInstance.get(`/product/${productId}/related`),
 
   // **Order APIs** 
   createOrder: (orderData) => apiInstance.post("/orders", orderData),

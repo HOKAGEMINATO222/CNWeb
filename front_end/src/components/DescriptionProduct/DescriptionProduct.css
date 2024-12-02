@@ -1,10 +1,11 @@
 
 .product {
-    margin: 70px 100px; 
-    border-radius: 10px; /* Adjust this value to your desired radius */
-    overflow: hidden; /* This ensures that the content inside the rounded corners does not overflow */
-    padding: 16px; /* Optional: Add padding for better spacing */
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for a better look */
+    margin: 30px 100px; 
+    border-radius: 10px; 
+    overflow: hidden;
+    padding: 16px;
+    box-shadow: 0 3px 8px rgba(83, 116, 209, 0.1);
+    border: 2px solid rgba(83, 116, 209, 0.5); /* Viền màu xanh lam nhạt */
 }
 
 .product-nav {
@@ -22,8 +23,13 @@
     transition: background-color 0.3s ease; /* Smooth transition on hover */
 }
 
-  
-  
+/* Hiệu ứng hover */
+.product-nav-box:hover {
+  background-color: #e8f5e9; /* Màu nền khi hover */
+  color: #4caf50; /* Màu chữ nổi bật khi hover */
+  transform: translateY(-2px); /* Hiệu ứng nâng lên nhẹ */
+}
+
   .product-nav {
     display: flex;
     justify-content: center;
@@ -60,19 +66,38 @@
     border-radius: 20px;
   }
   
+  /* Hiệu ứng chuyển đổi giữa các tab */
+.product-description-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.product-description-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
   @media (max-width: 1200px) {
     .product {
-      margin: 60px; /* Tùy chỉnh margin tương tự như trong media query */
+      margin: 20px; /* Tùy chỉnh margin tương tự như trong media query */
     }
   }
   
   @media (max-width: 800px) {
     .product {
-      margin: 60px 20px; /* Tùy chỉnh margin tương tự như trong media query */
+      margin: 10px 20px; /* Tùy chỉnh margin tương tự như trong media query */
     }
   
     .product-description {
       font-size: 14px; /* Tùy chỉnh font-size tương tự như trong media query */
     }
+  }
+  
+  .product-nav-box.active {
+    background-color: #4caf50; /* Màu nền nổi bật */
+    color: white; /* Màu chữ nổi bật */
+    font-weight: bold; /* Chữ đậm */
+    border: 1px solid #388e3c; /* Viền nổi bật */
   }
   
