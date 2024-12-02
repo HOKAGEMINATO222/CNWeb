@@ -71,6 +71,8 @@ export default function LoginPage() {
 
                     localStorage.setItem("phoneNumber", response.data.phoneNumber);
 
+                    localStorage.setItem("userID", response.data.userID);
+
                     localStorage.setItem('isLoggedIn', true); // Lưu trạng thái đăng nhập
 
                     navigate("/");// Chuyển hướng đến trang chủ

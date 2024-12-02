@@ -34,6 +34,18 @@ apiInstance.interceptors.response.use(
 
 // **API Service**
 const apiService = {
+
+  // **Cart APIs**
+  getCart: () => apiInstance.get("cart"),
+  addProductToCart: (productId, variantColor, quantity) => apiInstance.post("cart/add", { productId, variantColor, quantity }),
+  updateCartQuantity: (productId, variantColor, quantity) => apiInstance.put("cart/update", { productId, variantColor, quantity }),
+  removeProductFromCart: (productId, variantColor) => apiInstance.delete("cart/delete", { data: { productId, variantColor } }),
+  clearCart: () => apiInstance.delete("cart/clear"),
+  getProductById: (productId) => apiInstance.get(`product/getProductById/${productId}`),
+
+  // **Comment and Rating APIs**
+  addComment: (commentData) => apiInstance.post("/product/comment", commentData),
+  addRating: (ratingData) => apiInstance.post("/product/review", ratingData),
   
   // **User APIs**
   registerUser: (newUser) => apiInstance.post("/register", newUser),

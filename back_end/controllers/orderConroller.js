@@ -6,6 +6,8 @@ const UserModel = require('../models/userModel');
 const createOrder = async (req, res) => {
   const { userId, items, paymentMethod } = req.body;
 
+  console.log(req.body);
+
   try {
     // Kiểm tra xem người dùng có tồn tại không
     const user = await UserModel.findById(userId);

@@ -179,7 +179,7 @@ exports.loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1002h' });
-        res.json({ success: true, token, userName: user.userName, role: user.role, phoneNumber:user.phoneNumber });
+        res.json({ success: true, token, userName: user.userName, role: user.role, phoneNumber:user.phoneNumber, userID: user._id });
         console.log('Đăng nhập thành công! ', user.userName, token );
 
     } catch (error) {

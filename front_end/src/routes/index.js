@@ -1,4 +1,4 @@
-import Home from '../pages/Home/Home';
+import Home from '../pages/Home/home';
 import Order from '../pages/Order';
 import Product from '../pages/Product/ProductDetail';
 import RegisterPage from '../pages/RegisterAccount';
@@ -8,6 +8,7 @@ import userLayout from '../pages/userLayout/userLayout';
 import adminLayout from '../pages/AdminPage/adminLayout';
 import Category from '../pages/Category/Category'
 import UserProfile from '../pages/UserProfile/UserProfile';
+import Cart from '../pages/Cart/CartPage';
 
 // public Routes
 
@@ -26,6 +27,7 @@ const publicRoutes=[
     {path: '/phụ kiện', component: Category, layout: userLayout, childPath: ':brandName', category: 'Phụ Kiện'},
     {path: '/tai nghe', component: Category, layout: userLayout, childPath: ':brandName', category: 'Tai Nghe'},
     {path: '/profile',component: UserProfile, layout: userLayout},
+    {path: '/cart', component: Cart, layout: userLayout },
     // {path: '/checkout', component: Checkout, layout: userLayout},
     // {path: '/check', component: CheckOrder, layout: userLayout},
 ];

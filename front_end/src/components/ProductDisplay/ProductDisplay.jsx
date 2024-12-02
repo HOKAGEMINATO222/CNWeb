@@ -6,12 +6,12 @@ import { faCartArrowDown, faCartPlus, faChevronLeft, faChevronRight, faStar } fr
 import { Link } from 'react-router-dom';
 import ProductRating from '../ProductRating/ProductRating';
 import { useCart } from '../CartContext/CartContext';
+import apiInstance from "../../api/api"; 
 
 function ProductDisplay(props) {
     const {product} = props;
     const [index, setIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
-
 
     const handleIncrease = () => {
         setQuantity(prevQuantity => Math.min(prevQuantity + 1,product.variants[selectedVariantIndex].quantity ));
@@ -21,7 +21,7 @@ function ProductDisplay(props) {
         setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1));
     };
 
-    const { addToCart } = useCart();
+    //const { addToCart } = useCart();
 
     const formatPrice = (price) => {
         let priceString = price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
@@ -34,11 +34,23 @@ function ProductDisplay(props) {
       setIndex(index); 
     };
   
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
+        
         if (selectedVariantIndex !== null) {
-            const selectedVariant = product.variants[selectedVariantIndex];
+            const selectedVariantColor = product.variants[selectedVariantIndex].color;
             
-            addToCart({ ...product, selectedVariant });
+            //addToCart({ ...product, selectedVariant });
+            try {
+                const response = await apiInstance.addProductToCart( product._id, selectedVariantColor, quantity);
+                if (response.data.message === "Product added to cart") {
+                    alert("Sản phẩm đã được thêm vào giỏ hàng.");
+                } else {
+                    alert("Không thể thêm sản phẩm vào giỏ hàng, vui lòng thử lại.");
+                }
+            } catch (error) {
+                console.error("Lỗi khi thêm vào giỏ hàng:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            }
         } else {
             alert("Vui lòng chọn phân loại trước khi thêm vào giỏ hàng!");
         }
@@ -163,12 +175,10 @@ function ProductDisplay(props) {
                             <span>(Thanh toán khi nhận hàng hoặc nhận tại cửa hàng)</span>
                         </Link>
                     </button>
-                    <Link to='/order'>
                     <button onClick={handleAddToCart} className="add-to-cart-btn">
                         <FontAwesomeIcon icon={faCartArrowDown} />
                         <span>Thêm vào giỏ</span>
                     </button>
-                    </Link>
                     
                 </div>
                 

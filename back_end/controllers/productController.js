@@ -1,5 +1,7 @@
 const ProductModel = require('../models/productModel');
 const { validateProduct } = require('../validation/product');
+const Comment = require('../models/commentModel');
+const Rating = require('../models/ratingModel');
 
 // Example route to create a new product
 const createProduct = async (req, res) => {
@@ -64,5 +66,54 @@ const getProductById = async (req, res) => {
   }
 };
 
+// Add a review (rating)
+const addReview = async (req, res) => {
+  const { productId, userId, rating } = req.body;
 
-module.exports = {createProduct, getProducts, getProductById };
+  if (!productId || !userId || !rating) {
+      return res.status(400).json({ message: "All fields are required (productId, userId, rating)" });
+  }
+
+  try {
+      const product = await ProductModel.findById(productId);
+
+      if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+      }
+
+      product.ratings.push({ userId, rating });
+      await product.save();
+
+      res.status(200).json({ message: "Rating added successfully", ratings: product.ratings });
+  } catch (err) {
+      res.status(500).json({ message: "Error adding rating", error: err.message });
+  }
+};
+
+
+// Add a comment
+const addComment = async (req, res) => {
+  const { productId, userId, text } = req.body;
+
+  if (!productId || !userId || !text) {
+      return res.status(400).json({ message: "All fields are required (productId, userId, text)" });
+  }
+
+  try {
+      const product = await ProductModel.findById(productId);
+
+      if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+      }
+
+      product.comments.push({ userId, text });
+      await product.save();
+
+      res.status(200).json({ message: "Comment added successfully", comments: product.comments });
+  } catch (err) {
+      res.status(500).json({ message: "Error adding comment", error: err.message });
+  }
+};
+
+
+module.exports = {createProduct, getProducts, getProductById, addReview, addComment };
