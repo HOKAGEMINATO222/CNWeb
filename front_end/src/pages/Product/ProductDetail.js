@@ -29,10 +29,10 @@ export default function ProductDetail() {
 
 
     const handleLogin = () => {
-    // Xử lý đăng nhập ở đây
-    // localStorage.setItem('isLoggedIn', 'true');
-    // setIsLoggedIn(true);
-    setIsPopupOpen(false); // Đóng popup khi đăng nhập thành công
+        // Xử lý đăng nhập ở đây
+        // localStorage.setItem('isLoggedIn', 'true');
+        // setIsLoggedIn(true);
+        setIsPopupOpen(false); // Đóng popup khi đăng nhập thành công
     };
 
     const openPopup = () => {

@@ -47,6 +47,7 @@
   text-transform: uppercase;
   font-weight: bold;
   color: #fff;
+  background-color: hsla(183, 96%, 29%, 0.8); 
   padding: 2px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;

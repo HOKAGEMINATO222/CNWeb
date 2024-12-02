@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartArrowDown, faCartPlus, faChevronLeft, faChevronRight, faStar } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import ProductRating from '../ProductRating/ProductRating';
-import { useCart } from '../CartContext/CartContext';
 import apiInstance from "../../api/api"; 
 
 function ProductDisplay(props) {
