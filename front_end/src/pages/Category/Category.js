@@ -12,7 +12,7 @@ import apiService from '../../api/api.js';
  
  
 function Category(props) {
-  const [maxIndex, setMaxIndex] = useState(20);
+  const [maxIndex, setMaxIndex] = useState(15);
   const { brandName } = useParams();
   const [brandList, setBrandList] = useState([]);
   const [productBrand, setProductBrand] = useState('');
@@ -308,7 +308,7 @@ function Category(props) {
           })}
         </div>
         {(maxIndex < filteredProducts.length) &&
-          <div onClick={() => setMaxIndex(prev => prev + 20)} className="category-loadmore">
+          <div onClick={() => setMaxIndex(prev => prev + 10)} className="category-loadmore">
             Xem thêm {filteredProducts.length - maxIndex} sản phẩm
           </div>
         }

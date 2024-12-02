@@ -83,7 +83,7 @@ input:focus {
     font-size: 14px;
 }
 
-button {
+.button-submit {
     background: linear-gradient(90deg, #55d2fc, #1e47c1);
     color: #fff;
     border: none;
@@ -94,7 +94,7 @@ button {
     transition: background 0.3s ease;
 }
 
-button:hover {
+.button-submit:hover {
     background: linear-gradient(90deg, #251ca2, #ac68ff);
 }
 

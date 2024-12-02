@@ -27,7 +27,8 @@ function Header() {
         window.location.replace('/');
         localStorage.removeItem('phoneNumber'); // Xóa thông tin người dùng
         localStorage.removeItem('isLoggedIn'); // Xóa trạng thái đăng nhập
-        localStorage.removeItem('authToken')
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userID')
     };
 
     const [visible, setVisible] = useState(false);
@@ -45,8 +46,6 @@ function Header() {
         setVisible(!visible);
     }
   };
-
-
 
     return (
         <div className="header">
@@ -83,7 +82,7 @@ function Header() {
                 <div className="menu-list">
                     <Search />
                 </div>
-                <Link to="/check" className="about-delivery-tracking" >
+                <Link to="/checkout" className="about-delivery-tracking" >
                     <div className="box-icon">
                         <div className='my-icon'>
                             <FontAwesomeIcon icon={faTruckField} className='fa-h-24px' />

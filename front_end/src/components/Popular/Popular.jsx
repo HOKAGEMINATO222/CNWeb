@@ -41,10 +41,10 @@ function Popular({ category }) {
           case 'Chuột':
             setTitle('CHUỘT');
             break;
-          case 'Phụ Kiện':
+          case 'Phụ kiện':
             setTitle('PHỤ KIỆN');
             break;
-          case 'May tinh':
+          case 'Ti vi':
             setTitle('TI VI');
             break;
           default:
@@ -135,7 +135,7 @@ function Popular({ category }) {
                   className="swiper-wrapper"
                   style={{ 
                     transform: `translateX(${offset}px)`,
-                    transitionDuration: '500ms'
+                    transitionDuration: '100ms'
                   }}
                 >
                   {data_product.map((item, index) => {

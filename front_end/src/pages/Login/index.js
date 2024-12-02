@@ -115,7 +115,7 @@ export default function LoginPage() {
                     </div>
                     <div className="signup-link">Bạn chưa có tài khoản? <Link to="/register">Đăng ký ngay!</Link></div>
 
-                    <button className="button" type="submit">Đăng nhập</button>
+                    <button className="button-submit" type="submit">Đăng nhập</button>
                 </form>
                 {errors.apiError && <div className="error">{errors.apiError}</div>} {/* Hiển thị lỗi từ API */}
             </div>

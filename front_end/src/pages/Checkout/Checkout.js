@@ -1,9 +1,49 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useState, useMemo } from 'react';
 import CartContext from '../../components/CartContext/CartContext';
 import './Checkout.css';
-import AllApi from '../../api/api'
+import apiService from '../../api/api';
 
 const Checkout = () => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [userOrders, setUserOrders] = useState([]);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await apiService.getUserProfile();
+                if (response.data && response.data.user) {
+                    setUser(response.data.user);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user info', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        const fetchUserOrders = async () => {
+            if (user && user._id) {
+                try {
+                    const response = await apiService.getUserOrders(user._id);
+                    if (response.data) {
+                        setUserOrders(response.data.orders);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user orders', error);
+                }
+            }
+        };
+
+        fetchUserOrders();
+    }, [user]);
+    
+
     const { cart, selectedItems } = useContext(CartContext);
     const [recipientName, setRecipientName] = useState('');
     const [address, setAddress] = useState('');
@@ -20,21 +60,26 @@ const Checkout = () => {
         return price ? price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'N/A';
     };
 
-    const calculateTotalPrice = useMemo(() => {
-        return selectedProducts.reduce((total, item) => {
-            return total + (Number(item.newPrice) * item.quantity);
-        }, 0);
-    }, [selectedProducts]);
+    // Hàm tính tổng số lượng sản phẩm
+    const calculateTotalQuantity = () => {
+        return userOrders.reduce((total, item) => total + item.quantity, 0);
+    };
 
-    const calculateTotalQuantity = useMemo(() => {
-        return selectedProducts.reduce((total, item) => total + item.quantity, 0);
-    }, [selectedProducts]);
+    // Hàm tính tổng giá trị của các sản phẩm
+    const calculateTotalPrice = () => {
+        return userOrders.reduce((total, item) => {
+            return total + (Number(item.totalAmount) * item.quantity);
+        }, 0);
+    };
+
+    
 
     const calculateEstimatedDeliveryDate = (days) => {
         const deliveryDate = new Date(orderDate);
         deliveryDate.setDate(deliveryDate.getDate() + days);
         return deliveryDate.toLocaleDateString('vi-VN');
     };
+
     const handlePaymentClick = () => {
         setIsPaymentOptionsVisible(true);
     };
@@ -49,16 +94,32 @@ const Checkout = () => {
             numbers.push(item.quantity);
         });
         
-        console.log(calculateTotalPrice);
-        try{
-            const orderInfo = await AllApi.addOrder(ids, numbers);
-            const response = await AllApi.checkout(calculateTotalPrice, recipientName + " mua hang", orderInfo.data.maDonHang);
-            window.location.href = response.data;
-        }
-        catch(error){
-            console.log(error)
+        // try {
+        //     const orderInfo = await AllApi.addOrder(ids, numbers);
+        //     const response = await AllApi.checkout(calculateTotalPrice, recipientName + " mua hang", orderInfo.data.maDonHang);
+        //     window.location.href = response.data;
+        // } catch (error) {
+        //     console.log(error);
+        // }
+    };
+
+    const handleCancelOrder = async (orderId) => {
+        try {
+            // Gọi API để hủy đơn hàng (ví dụ: apiService.cancelOrder(orderId))
+            const response = await apiService.cancelOrder(orderId);
+            if (response.data.success) {
+                // Cập nhật lại danh sách đơn hàng sau khi hủy thành công
+                setUserOrders((prevOrders) => prevOrders.filter(order => order._id !== orderId));
+                alert('Hủy đơn hàng thành công!');
+            } else {
+                alert('Hủy đơn hàng thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi hủy đơn hàng', error);
+            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
         }
     };
+    
 
     const handleCODPayment = async (e) => {
         e.preventDefault();
@@ -69,105 +130,84 @@ const Checkout = () => {
             ids.push(item.selectedVariant.id);
             numbers.push(item.quantity);
         });
-        try{
-            await AllApi.addOrder(ids, numbers);
-        } 
-        catch(error){
-            console.log(error);
-        }
+        // try {
+        //     await AllApi.addOrder(ids, numbers);
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
+
+    // Conditional rendering for loading and user data
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!user) {
+        return <div>Không có thông tin người dùng. Vui lòng đăng nhập.</div>;
+    }
 
     return (
         <div className="checkout-container">
-            <h1>Thông tin đơn hàng</h1>
+            <div style={{ display: "flex", justifyContent: 'center' }}>
+                <h1>Thông tin đơn hàng</h1>
+            </div>
             <div className="checkout-page">
                 <form onSubmit={handleSubmit}>
                     <h3>Thông tin người nhận hàng:</h3>
-                    <div className="receiver-inf">
-                        <div className="form-group">
-                            <div className='form-group-inf'>
-                                <label htmlFor="recipientName">Tên người nhận:</label>
-                                <input
-                                    type="text"
-                                    id="recipientName"
-                                    value={recipientName}
-                                    onChange={(e) => setRecipientName(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group-inf">
-                                <label htmlFor="phoneNumber">Số điện thoại người nhận:</label>
-                                <input
-                                    type="tel"
-                                    id="phoneNumber"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <div className="form-group-inf-address">
-                                <label htmlFor="address">Địa chỉ nhận hàng:</label>
-                                <input
-                                    type="text"
-                                    id="address"
-                                    value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3>Sản phẩm của bạn:</h3>
-                    <div className="checkout-items">
-                        {selectedProducts.map((item) => (
-                            <div key={item.id} className="checkout-item">
-                                <img src={item.selectedVariant.image} alt={item.name} />
-                                <div className="checkout-item-details">
-                                    <h2>{item.name}</h2>
-                                    <p>Màu sắc: {item.selectedVariant?.color || 'N/A'}</p>
-                                    <p>Giá: {formatPrice(item.newPrice)}</p>
-                                    <p>Số lượng: {item.quantity}</p>
-                                    <p>Số tiền: {formatPrice(Number(item.newPrice) * item.quantity)}</p>
+                    {isLoggedIn ? (
+                        <div className="receiver-inf">
+                            <div className="form-group">
+                                <div className='form-group-inf'>
+                                    <label>Tên người nhận:</label>
+                                    <div>{user.userName || recipientName}</div> {/* Display name as non-editable */}
+                                </div>
+                                <div className="form-group-inf">
+                                    <label>Số điện thoại người nhận:</label>
+                                    <div>{user.phoneNumber || phoneNumber}</div> {/* Display phone number as non-editable */}
                                 </div>
                             </div>
-                        ))}
-                    </div>
-
-                    <div className="date-form">
-                        <div className="date-inf">
-                            <p>Ngày đặt hàng: {orderDate.toLocaleDateString('vi-VN')}</p>
+                            <div className="form-group">
+                                <div className="form-group-inf-address">
+                                    <label htmlFor="address">Địa chỉ nhận hàng:</label>
+                                    <input
+                                        type="text"
+                                        id="address"
+                                        value={user.diaChi || address} // Editable address field
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div className="date-inf">
-                            <p>Ngày nhận hàng dự kiến: {calculateEstimatedDeliveryDate(3)} đến {calculateEstimatedDeliveryDate(7)}</p>
+                    ) : (
+                        <div className="receiver-inf">
+                            <p>Vui lòng đăng nhập để tự động điền thông tin người nhận.</p>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="checkout-total">
-                        <h3>Tổng giá trị đơn hàng: {formatPrice(calculateTotalPrice)} ({calculateTotalQuantity} sản phẩm)</h3>
-                    </div>
-
-                    <div className='btn-complete-order-container'>
-                        {!isPaymentOptionsVisible ? (
-                                <button type="button" className="btn-complete-payment" onClick={handlePaymentClick}>
-                                    Thanh toán
-                                </button>
-                            ) : (
-                                <>
-                                    <div className='payment-choice'>
-                                        <button type="button" className="btn-complete-order" onClick={handleCODPayment}>
-                                            Thanh toán khi nhận hàng
-                                        </button>
-                                        <button type="submit" className="btn-complete-order">
-                                            Thanh toán online
-                                        </button>
+                    <h3>Đơn hàng của bạn:</h3>
+                        <div className="checkout-items">
+                            {userOrders.map((item) => (
+                                <div key={item._id} className="checkout-item">
+                                    <div className="checkout-item-details">
+                                        {item.items.map((productItem, index) => (
+                                            <div key={index} className="product-details">
+                                                <h2>{productItem.productId.name}</h2>
+                                                <p className="item-price">Giá: {formatPrice(productItem.productId.price)}</p>
+                                            </div>
+                                        ))}
                                     </div>
-                                   
-                                </>
-                            )}
-                    </div>
+                                    <div className="date-form">
+                                        <div className="date-inf" style={{ marginTop: '10px' }}>
+                                            <p>Ngày đặt hàng: {new Date(item.updatedAt).toLocaleDateString('vi-VN')}</p>
+                                        </div>
+                                        <div className="date-inf">
+                                            <p>Ngày nhận hàng dự kiến: {calculateEstimatedDeliveryDate(3)} đến {calculateEstimatedDeliveryDate(7)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                 </form>
             </div>
         </div>

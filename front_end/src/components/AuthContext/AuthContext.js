@@ -11,10 +11,12 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('authToken');
             if (token) {
                 setIsLoggedIn(true);
-                // Tải thông tin người dùng từ localStorage hoặc API nếu cần
-                const storedUser = JSON.parse(localStorage.getItem('user'));
+                const storedUser = localStorage.getItem('user');
                 if (storedUser) {
-                    setUser(storedUser);
+                    const parsedUser = JSON.parse(storedUser);
+                    if (parsedUser) {
+                        setUser(parsedUser);
+                    }
                 }
             }
         } catch (error) {
@@ -25,8 +27,8 @@ export const AuthProvider = ({ children }) => {
     const login = (user, token) => {
         setUser(user);
         setIsLoggedIn(true);
-        localStorage.setItem('authToken', token); // Chỉ lưu token
-        localStorage.setItem('user', JSON.stringify(user)); // Lưu thông tin người dùng
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
     };
 
     const logout = () => {
@@ -36,12 +38,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    const value = useMemo(() => ({
+    const value = {
         isLoggedIn,
         user,
         login,
         logout
-    }), [isLoggedIn, user]);
+    };
 
     return (
         <AuthContext.Provider value={value}>

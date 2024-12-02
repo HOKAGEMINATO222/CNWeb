@@ -16,7 +16,8 @@ function Home() {
       <Popular category = {"Tai nghe"}/> 
       <Popular category = {"Bàn phím"}/> 
       <Popular category = {"Phụ kiện"}/>
-      <Popular category = {"Chuột"}/>        
+      <Popular category = {"Chuột"}/>  
+      <Popular category = {"Ti vi"}/>       
       </div>
   )
 }
