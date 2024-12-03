@@ -3,6 +3,7 @@ import { UserOutlined, ProductOutlined, BellOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Flex, Menu } from "antd";
 import AdminUser from "../../componet/AdminUser/AdminUser";
 import AdminProduct from "../../componet/AdminProduct/AdminProduct";
+import AdminDataboard from "../../componet/AdminDataboard/AdminDataboard";
 import boxImage from "./box.png";
 import AdminOrder from "../../componet/AdminOrder/AdminOrder";
 import AdminProfile from "../../componet/AdminProfile/AdminProfile";
@@ -12,6 +13,7 @@ import { faBell } from "@fortawesome/free-solid-svg-icons";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippyjs/react/headless";
 import {InfoCircleOutlined} from '@ant-design/icons';
+import { DashboardOutlined } from "@ant-design/icons";
 import apiService from "../../api/api";
 
 
@@ -35,7 +37,8 @@ const items = [
   getItem("Sản phẩm", "products", <ProductOutlined />),
   getItem("Người dùng", "users", <UserOutlined />),
   getItem("Đơn hàng", "orders", <img src={boxImage} alt="Order" width={14} />),
-  getItem("Thông tin", "profile", <InfoCircleOutlined />)
+  getItem("Thông tin", "profile", <InfoCircleOutlined />),
+  getItem("Databoard", "databoard", <DashboardOutlined />)
 ];
 const Admin = () => {
   useEffect(() => {
@@ -77,6 +80,8 @@ const Admin = () => {
         return <AdminOrder />;
       case "profile":
         return <AdminProfile />;
+      case "databoard":
+        return <AdminDataboard />;
       default:
         return <></>;
     }

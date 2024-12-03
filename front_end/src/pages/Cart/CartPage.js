@@ -6,17 +6,23 @@ import apiInstance from "../../api/api"; // Adjust the path to your API service
 import "./CartPage.css";
 import { MdDelete } from "react-icons/md";
 import { TiArrowBack } from "react-icons/ti";
+import paymentImage from '../../components/Assets/images/payment.jpg';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userID");
+    const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
 
     const [isPaymentOptionsVisible, setIsPaymentOptionsVisible] = useState(false);
 
     const handlePaymentClick = () => {
         setIsPaymentOptionsVisible(true);
+    };
+
+    const handleOnlinePayment = () => {
+        setIsPaymentModalVisible(true);
     };
 
     const formatPrice = (price) => {
@@ -256,18 +262,18 @@ export default function CartPage() {
                                         <button type="button" className="btn-complete-order" onClick={handleCheckout}>
                                             Thanh toán khi nhận hàng
                                         </button>
-                                        <button type="submit" className="btn-complete-order">
+                                        <button type="submit" className="btn-complete-order" onClick={handleOnlinePayment}>
                                             Thanh toán online
                                         </button>
 
-                                        <TiArrowBack 
+                                        <TiArrowBack
                                             style={{ fontSize: '25px', cursor: 'pointer', transition: 'transform 0.3s ease' }}
-                                            type="button" 
-                                            className="btn-back" 
+                                            type="button"
+                                            className="btn-back"
                                             onClick={() => setIsPaymentOptionsVisible(false)}
                                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.2)'}
                                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                                            />
+                                        />
                                     </div>
                                 )}
                             </div>
@@ -275,6 +281,30 @@ export default function CartPage() {
                     </div>
                 )}
             </div>
+            {isPaymentModalVisible && (
+                <div className="payment-modal">
+                    <div className="modal-content">
+                        <h2>Thông tin thanh toán</h2>
+                        <p><strong>Tổng giá thành:</strong> {formatPrice(totalAmount)}</p>
+                        <p><strong>Mã đơn hàng:</strong> {Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+                        <h3>Danh sách sản phẩm:</h3>
+                        <ul>
+                            {cartItems.filter(item => item.selected).map(item => (
+                                <li key={item.productId}>
+                                    <p>{item.productName} - Số lượng: {item.quantity}</p>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="qr-code">
+                            <img src={paymentImage} alt="QR Code để thanh toán" />
+                        </div>
+                        <div className="modal-buttons">
+                            <button className="checkout-btn" onClick={handleCheckout}>Xác nhận thanh toán</button>
+                            <button className="close-btn" onClick={() => setIsPaymentModalVisible(false)}>Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

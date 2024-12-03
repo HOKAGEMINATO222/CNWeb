@@ -33,6 +33,34 @@ function ProductDisplay(props) {
       setSelectedVariantIndex(index); 
       setIndex(index); 
     };
+
+    const handleCheckout = async () => {
+        const selectedVariant = product.variants[selectedVariantIndex];
+    
+        const orderData = {
+            userId: localStorage.getItem("userID"), // Adjust to match your user data retrieval
+            items: [
+                {
+                    productId: product._id,
+                    variant: selectedVariant,
+                    quantity: quantity,
+                    price: product.price * (1 - selectedVariant.sale / 100), // Sale price
+                },
+            ],
+            paymentMethod: "Cash on Delivery", // Example payment method
+        };
+    
+        try {
+            const response = await apiInstance.createOrder(orderData);
+            if (response.data) {
+                alert("Tạo đơn hàng thành công!");
+            }
+        } catch (error) {
+            console.error("Lỗi khi tạo đơn hàng: ", error);
+            alert("Lỗi khi tạo đơn hàng! Xin hãy thử lại sau!");
+        }
+    };
+    
   
     const handleAddToCart = async () => {
         
@@ -169,8 +197,8 @@ function ProductDisplay(props) {
                     <p className="p-14px">{product.variants[selectedVariantIndex].quantity} sản phẩm có sẵn</p>
                 </div>
                 <div className="box-order-btn">
-                    <button onClick={handleAddToCart} className="order-btn">
-                        <Link to='/order'>
+                    <button onClick={handleCheckout} className="order-btn">
+                        <Link to='/checkout'>
                             <strong>MUA NGAY</strong>
                             <span>(Thanh toán khi nhận hàng hoặc nhận tại cửa hàng)</span>
                         </Link>

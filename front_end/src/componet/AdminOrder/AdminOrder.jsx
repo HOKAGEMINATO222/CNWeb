@@ -69,7 +69,7 @@ const AdminOrder = () => {
 
   const deleteOrder = async (record) => {
     try {
-      await apiService.deleteOrder(record._id)
+      await apiService.deleteOrder(record.order._id)
 
       const updatedOrders = orders.filter(order => order.maDonHang !== record.maDonHang);
       setOrders(updatedOrders);
@@ -185,6 +185,18 @@ const AdminOrder = () => {
       ),
   });
 
+  const showDeleteConfirm = (record) => {
+    Modal.confirm({
+      title: 'Bạn có chắc chắn muốn xóa đơn hàng này?',
+      icon: <ExclamationCircleFilled />,
+      onOk() {
+        console.log(record);
+        deleteOrder(record);
+      },
+      onCancel() {},
+    });
+  };
+
   const columns = [
     {
       title: "Mã",
@@ -232,6 +244,25 @@ const AdminOrder = () => {
       ellipsis: true,
       sorter: (a, b) => a.orderStatus.localeCompare(b.orderStatus),
       sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Actions", // Cột này để chứa các hành động
+      key: "actions",
+      width: '10%', // Chỉnh độ rộng của cột Actions
+      render: (_, record) => (
+        <Button
+          style={{ transform: "scale(1.5,1.5)" }}
+          type="text"
+          size="small"
+          shape="circle"
+          danger
+          icon={<DeleteFilled />}
+          onClick={(e) => {
+            e.stopPropagation();
+            showDeleteConfirm(record);
+          }}
+        />
+      ),
     },
   ];
 
