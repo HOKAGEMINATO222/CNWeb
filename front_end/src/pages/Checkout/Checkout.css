@@ -184,32 +184,78 @@ h1 {
 /* Container của nút hủy */
 .cancel-button-container {
     margin-top: 30px;
-    text-align: center; /* Căn giữa nút */
+    text-align: center;
+    /* Căn giữa nút */
 }
 
 /* Nút hủy */
 .cancel-button-container button {
-    background-color: #e74c3c; /* Màu nền đỏ */
-    color: white; /* Màu chữ trắng */
-    border: none; /* Loại bỏ đường viền mặc định */
-    padding: 10px 12px; /* Tạo không gian cho nút */
-    border-radius: 8px; /* Bo tròn góc để nút mềm mại hơn */
-    font-size: 16px; /* Kích thước chữ vừa phải */
-    font-weight: bold; /* Làm chữ đậm để nổi bật */
-    cursor: pointer; /* Thêm hiệu ứng con trỏ khi hover */
-    transition: all 0.3s ease; /* Thêm hiệu ứng mượt mà khi thay đổi trạng thái */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho nút */
+    background-color: #e74c3c;
+    /* Màu nền đỏ */
+    color: white;
+    /* Màu chữ trắng */
+    border: none;
+    /* Loại bỏ đường viền mặc định */
+    padding: 10px 12px;
+    /* Tạo không gian cho nút */
+    border-radius: 8px;
+    /* Bo tròn góc để nút mềm mại hơn */
+    font-size: 16px;
+    /* Kích thước chữ vừa phải */
+    font-weight: bold;
+    /* Làm chữ đậm để nổi bật */
+    cursor: pointer;
+    /* Thêm hiệu ứng con trỏ khi hover */
+    transition: all 0.3s ease;
+    /* Thêm hiệu ứng mượt mà khi thay đổi trạng thái */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Thêm bóng đổ cho nút */
 }
 
 /* Hiệu ứng khi hover vào nút */
 .cancel-button-container button:hover {
-    background-color: #c0392b; /* Màu nền đỏ đậm khi hover */
-    transform: translateY(-3px); /* Hiệu ứng dịch chuyển nút lên một chút khi hover */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Tăng độ đậm của bóng đổ */
+    background-color: #c0392b;
+    /* Màu nền đỏ đậm khi hover */
+    transform: translateY(-3px);
+    /* Hiệu ứng dịch chuyển nút lên một chút khi hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* Tăng độ đậm của bóng đổ */
 }
 
 /* Hiệu ứng khi nút bị nhấn */
 .cancel-button-container button:active {
-    transform: translateY(0); /* Nút trở lại vị trí ban đầu khi nhấn */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ khi nhấn */
+    transform: translateY(0);
+    /* Nút trở lại vị trí ban đầu khi nhấn */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Bóng đổ nhẹ khi nhấn */
+}
+
+.checkout-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* or space-around */
+    gap: 20px; /* Add spacing between cards */
+}
+
+.checkout-item {
+    flex: 1 1 calc(45% - 20px); /* Ensure cards are responsive and have consistent width */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px; /* Increase internal spacing */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px; /* Add spacing between content and status card */
+}
+
+.order-status-card {
+    flex-shrink: 0; /* Prevent status card from shrinking */
+    width: 150px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }

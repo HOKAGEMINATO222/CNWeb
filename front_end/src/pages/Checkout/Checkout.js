@@ -42,7 +42,7 @@ const Checkout = () => {
 
         fetchUserOrders();
     }, [user]);
-    
+
 
     const { cart, selectedItems } = useContext(CartContext);
     const [recipientName, setRecipientName] = useState('');
@@ -72,7 +72,7 @@ const Checkout = () => {
         }, 0);
     };
 
-    
+
 
     const calculateEstimatedDeliveryDate = (days) => {
         const deliveryDate = new Date(orderDate);
@@ -88,12 +88,12 @@ const Checkout = () => {
         e.preventDefault();
         var ids = [];
         var numbers = [];
-        
+
         selectedProducts.forEach((item) => {
             ids.push(item.selectedVariant.id);
             numbers.push(item.quantity);
         });
-        
+
         // try {
         //     const orderInfo = await AllApi.addOrder(ids, numbers);
         //     const response = await AllApi.checkout(calculateTotalPrice, recipientName + " mua hang", orderInfo.data.maDonHang);
@@ -119,13 +119,13 @@ const Checkout = () => {
             alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
         }
     };
-    
+
 
     const handleCODPayment = async (e) => {
         e.preventDefault();
         var ids = [];
         var numbers = [];
-        
+
         selectedProducts.forEach((item) => {
             ids.push(item.selectedVariant.id);
             numbers.push(item.quantity);
@@ -145,6 +145,36 @@ const Checkout = () => {
     if (!user) {
         return <div>Không có thông tin người dùng. Vui lòng đăng nhập.</div>;
     }
+
+    const getStatusCardStyle = (status) => {
+        switch (status) {
+            case 'Processing':
+                return { backgroundColor: '#f9c74f', color: '#fff', padding: '10px', borderRadius: '5px' };
+            case 'Shipped':
+                return { backgroundColor: '#4dabf7', color: '#fff', padding: '10px', borderRadius: '5px' };
+            case 'Delivered':
+                return { backgroundColor: '#43a047', color: '#fff', padding: '10px', borderRadius: '5px' };
+            case 'Cancelled':
+                return { backgroundColor: '#f44336', color: '#fff', padding: '10px', borderRadius: '5px' };
+            default:
+                return { backgroundColor: '#bdbdbd', color: '#fff', padding: '10px', borderRadius: '5px' };
+        }
+    };
+
+    const getStatusText = (status) => {
+        switch (status) {
+            case 'Processing':
+                return 'Đang xử lý';
+            case 'Shipped':
+                return 'Đã giao hàng';
+            case 'Delivered':
+                return 'Đã nhận hàng';
+            case 'Cancelled':
+                return 'Đã hủy';
+            default:
+                return 'Trạng thái không xác định';
+        }
+    };
 
     return (
         <div className="checkout-container">
@@ -186,9 +216,10 @@ const Checkout = () => {
                     )}
 
                     <h3>Đơn hàng của bạn:</h3>
-                        <div className="checkout-items">
-                            {userOrders.map((item) => (
-                                <div key={item._id} className="checkout-item">
+                    <div className="checkout-items">
+                        {userOrders.map((item) => (
+                            <div key={item._id} className="checkout-item-wrapper">
+                                <div className="checkout-item">
                                     <div className="checkout-item-details">
                                         {item.items.map((productItem, index) => (
                                             <div key={index} className="product-details">
@@ -197,7 +228,9 @@ const Checkout = () => {
                                             </div>
                                         ))}
                                     </div>
-                                    
+                                    <div style={{ marginTop: '30px' }}>
+                                        <h4>Tổng tiền: {item.totalAmount}</h4>
+                                    </div>
                                     <div className="date-form">
                                         <div className="date-inf" style={{ marginTop: '10px' }}>
                                             <p>Ngày đặt hàng: {new Date(item.updatedAt).toLocaleDateString('vi-VN')}</p>
@@ -207,8 +240,14 @@ const Checkout = () => {
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+
+                                {/* Order Status Card */}
+                                <div className="order-status-card" style={getStatusCardStyle(item.orderStatus)}>
+                                    <p>{getStatusText(item.orderStatus)}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </form>
             </div>
         </div>

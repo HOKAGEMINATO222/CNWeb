@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useId} from 'react';
 import './CommentAndRating.css';
 import axios from 'axios'; 
 import ReactStars from 'react-rating-stars-component';
@@ -9,60 +9,95 @@ import LoginPopup from '../LoginPopup/LoginPopup.js';
 import AllApi from '../../api/api';
 
 const CommentAndRating = ({ product, onOpenPopup }) => {
-  const [comments, setComments] = useState([]);
-  const [rating, setRating] = useState(0);
   const [content, setContent] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 5;
+  const [comments, setComments] = useState([]);
+  const [rating, setRating] = useState(1);
+  const userId = localStorage.getItem("userID");
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
+    console.log(newRating);
   };
 
   const handleContentChange = (event) => {
     setContent(event.target.value); 
   };
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      if (product?.id) {
-        try {
-          const response = await AllApi.getComments(product.id);
-          setComments(response.data);
-        } catch (error) {
-          console.error(error);
-        }
+  const fetchComments = async () => {
+    try {
+      const response = await AllApi.getComments(product._id);
+      if (Array.isArray(response.data.comments)) {
+        setComments(response.data.comments); // Ensure it's an array
+        console.log("Comments data:", comments[0]);
+      } else {
+        setComments([]); // Default to an empty array if not
       }
-    };
+    } catch (error) {
+      console.error(error);
+      setComments([]); // Default to an empty array on error
+    }
+};
 
-    fetchComments();
-  }, [product?.id]);
+  useEffect(() => {
+    fetchComments(); // Fetch comments when product ID changes
+  }, [product?._id]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    if (!isLoggedIn) {
+      onOpenPopup(); // Trigger the login popup
+      return;
+    }
+  
+    if (content.length < 15) {
+      alert("Nội dung bình luận tối thiểu 15 ký tự.");
+      return;
+    }
+  
+    if (rating === 0) {
+      alert("Vui lòng chọn đánh giá sao.");
+      return;
+    }
+
+    console.log(userId);
+    console.log(isLoggedIn);
+  
     try {
-      const response = await AllApi.addComments({
-        productId: product.id,
-        comment: content,
-        rating: rating
-      });
-      setComments([...comments, response.data]);
+      // Submit comment
+      await AllApi.addReview(
+        product._id,
+        userId,
+        rating,
+        content
+      );
+
+      await AllApi.addComment(
+        product._id,
+        userId,
+        content,
+        rating
+      );
+  
+      alert("Bình luận và đánh giá đã được thêm.");
       setContent('');
       setRating(0);
+      fetchComments(); // Refresh comments after submission
     } catch (error) {
-      console.log(error);
-      if (error.response.data === "Not purchased") {
-        alert("Bạn chưa mua mặt hàng này!");
-      }
+      console.error("Error submitting comment or rating:", error);
+      alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
     }
   };
+  
 
   const indexOfLastComment = currentPage * commentsPerPage;
   const indexOfFirstComment = indexOfLastComment - commentsPerPage;
   const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   const totalPages = Math.ceil(comments.length / commentsPerPage);
@@ -80,49 +115,69 @@ const CommentAndRating = ({ product, onOpenPopup }) => {
           <div className="rating-average">
             <p>Stars: {product.rating}</p>
             <ProductRating rating={product.rating} />
-            <p> / {product.totalRatings} đánh giá </p>
+            <p> / {product.rating} đánh giá </p>
           </div>
           <p>(Vui lòng đăng nhập vào tài khoản đã mua hàng để đánh giá sản phẩm)</p>
         </div>
-        <form onClick={onOpenPopup} className="product-rating-box" onSubmit={handleSubmit}>
-          <div className="comment-part">
-            <textarea
-              title="Nội dung"
-              placeholder="Nội dung. Tối thiểu 15 ký tự *"
-              name="Content"
-              value={content}
-              onChange={handleContentChange}
-            ></textarea>
-          </div>
-          <div className="rating-part">
-            <label>
-              Rating:
-              <ReactStars
+        <form className="product-rating-box" onSubmit={handleSubmit}>
+            <div className="comment-part">
+              <textarea
+                title="Nội dung"
+                placeholder="Nội dung. Tối thiểu 15 ký tự *"
+                name="Content"
+                value={content}
+                onChange={handleContentChange}
+              ></textarea>
+            </div>
+            <div className="rating-part">
+              <label>
+                Rating:
+                <ReactStars
                 count={5}
                 onChange={handleRatingChange}
                 size={24}
                 activeColor="gold"
                 value={rating}
               />
-            </label>
-          </div>
-          <button className="button-yin" type="submit">GỬI ĐÁNH GIÁ</button>
-        </form>
+              </label>
+            </div>
+            {isLoggedIn ? (
+              <button className="button-yin" type="submit">
+                GỬI ĐÁNH GIÁ
+              </button>
+            ) : (
+              <button
+                className="button-yin"
+                type="button"
+                onClick={onOpenPopup} // Trigger login popup
+              >
+                ĐĂNG NHẬP ĐỂ GỬI ĐÁNH GIÁ
+              </button>
+            )}
+          </form>
         <div className="rating-content">
           <div>
-            {currentComments.map(comment => (
-              <div key={comment.id} className="item-comment">
-                <div className="avt">
-                  <img className="avt-yin" src={no_avt} alt="Avatar" />
-                </div>
-                <div className="info-comment">
-                  <strong className="user-name">{comment.user.userName}</strong>
-                  <span> ( {new Date(comment.created).toLocaleDateString()} )</span>
-                  <ProductRating rating={comment.rating} />
-                  <div className="review-item">{comment.comment}</div>
+          {currentComments.map(comment => (
+            <div key={comment.userId._id} className="item-comment">
+              <div className="avt">
+                <img className="avt-yin" src={no_avt} alt="Avatar" />
+              </div>
+              <div className="info-comment">
+                <strong className="user-name">
+                  {"Ẩn danh"}
+                </strong>
+                <span>
+                  ( {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Không xác định"} )
+                </span>
+                <ProductRating rating={comment.rating || 0} />
+                <div className="review-item">
+                  {typeof comment.text === "string"
+                    ? comment.text
+                    : JSON.stringify(comment.comment)}
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
           </div>
           <p className = "p-comment"> Xem bình luận trang số </p>
           <div className="pagination">
