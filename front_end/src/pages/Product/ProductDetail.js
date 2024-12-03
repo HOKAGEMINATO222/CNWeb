@@ -48,6 +48,7 @@ export default function ProductDetail() {
             try {
                 const response = await apiService.getProductById(productId);
                 setProduct(response.data.product); 
+                console.log('Fetching product with ID:', product);
                 setLoading(false);
             } catch (err) {
                 setError(err.message);

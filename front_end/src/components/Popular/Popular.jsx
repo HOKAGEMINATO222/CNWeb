@@ -3,7 +3,6 @@ import './Popular.css'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import all_products from '../Assets/all_product.js'
 import Item from '../Item/Item'
 import apiService from '../../api/api.js';
 
@@ -112,12 +111,7 @@ function Popular({ category }) {
     }
  
   }, [maxIndex, index])
-  function getBrandImage(brandName) {
-    const product = all_products.find(product => product.brand.name.toLowerCase() === brandName.toLowerCase());
-      if (product) {
-      return product.brand.image;
-    } 
-  }
+
   return (
     <>
       {(data_product.length > 0) && 

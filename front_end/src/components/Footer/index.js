@@ -6,13 +6,13 @@ function Footer(props) {
             <div className="footer">
                 <div className="footer-top">
                     <div className="footer-top-name">
-                        <h2>Tech Store</h2>
+                        <h2 style={{color:"rgb(243, 247, 10)"}}>HI TECH</h2>
                     </div>
                     <div className="footer-top-about">
                         <h2>about</h2>
                         <ul>
                             <li>
-                            Tech Store là địa chỉ tin cậy cho mọi người khi tìm kiếm các sản phẩm điện máy và điện tử chất lượng cao.
+                            HI TECH là địa chỉ tin cậy cho mọi người khi tìm kiếm các sản phẩm điện máy và điện tử chất lượng cao.
                             </li>
                             <li>
                             Với cam kết về chất lượng và dịch vụ chuyên nghiệp, chúng tôi luôn đảm bảo rằng mỗi khách hàng đều có trải nghiệm mua sắm tốt nhất khi đến với chúng tôi. Hãy ghé thăm cửa hàng của chúng tôi ngay hôm nay để khám phá thế giới công nghệ đầy sáng tạo và tiện ích!

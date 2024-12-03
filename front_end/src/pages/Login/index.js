@@ -64,7 +64,7 @@ export default function LoginPage() {
                     // Cập nhật role vào localStorage 
                     localStorage.setItem("role", response.data.role);
                     
-                    window.location.href = "/admin"; // Chuyển hướng đến trang admin
+                    navigate ("/admin"); // Chuyển hướng đến trang admin
                 }   
                  else {
                     localStorage.setItem("authToken", response.data.token);

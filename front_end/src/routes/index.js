@@ -15,7 +15,6 @@ import Cart from '../pages/Cart/CartPage';
 
 const publicRoutes=[
     {path: '/admin', component:Admin, layout: adminLayout},
-
     {path: '/', component: Home, layout: userLayout},
     {path: '/product', component: Product, layout: userLayout, childPath: ':productId'},
     {path: '/register', component:RegisterPage, layout: userLayout},
@@ -39,5 +38,5 @@ const privateRoutes=[
 ];
 
 export{
-    publicRoutes,privateRoutes
+    publicRoutes, privateRoutes
 }

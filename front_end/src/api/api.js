@@ -1,14 +1,14 @@
 import axios from "axios";
 
 // Base URL local cho API
-// export const base_url = "http://localhost:5000";
-export const base_url = "https://cnweb-backend-6mh8.onrender.com";
+export const base_url = "http://localhost:5000";
+// export const base_url = "https://cnweb-backend-6mh8.onrender.com";
 // Cấu hình axios instance
 axios.defaults.withCredentials = true;
 
 const apiInstance = axios.create({
   baseURL: base_url,
-  timeout: 30000, // Timeout 10 giây
+  timeout: 60000, // Timeout 10 giây
 });
 
 // Interceptor để thêm token vào header Authorization
@@ -41,7 +41,7 @@ const apiService = {
   updateCartQuantity: (productId, variantColor, quantity) => apiInstance.put("cart/update", { productId, variantColor, quantity }),
   removeProductFromCart: (productId, variantColor) => apiInstance.delete("cart/delete", { data: { productId, variantColor } }),
   clearCart: () => apiInstance.delete("cart/clear"),
-  getProductById: (productId) => apiInstance.get(`product/getProductById/${productId}`),
+
 
   // **Comment and Rating APIs**
   addReview: (productId, userId, stars, text) => apiInstance.post(`/product/${productId}/review`, {productId, userId, stars, text}),
@@ -71,6 +71,7 @@ const apiService = {
     apiInstance.put(`/orders/${orderId}/status`, { status }),
   deleteOrder: (orderId) =>
     apiInstance.delete(`/orders/${orderId}`),
+  cancelOrder: (orderId) => apiInstance.patch(`/orders/${orderId}`), 
 
   // **Admin APIs**
   getAdminDashboard: () => apiInstance.get("/admin/dashboard"),

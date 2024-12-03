@@ -163,3 +163,25 @@
     border-radius: 5px;        /* Bo góc cho hình ảnh */
     margin-bottom: 10px;
   }
+
+  /* home.css */
+.chat-icon {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 50%; /* Tạo hình tròn */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Thêm hiệu ứng */
+  z-index: 1000;
+}
+
+.chat-icon:hover {
+  transform: scale(1.1); /* Phóng to khi hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Thêm bóng đổ khi hover */
+}

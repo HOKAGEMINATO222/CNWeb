@@ -32,7 +32,7 @@ function RecommendedProducts({ category, productId }) {
       try {
         
         const products = (await apiService.getRelatedProducts(productId)).data;
-        console.log('Fetching product with ID:', products);
+       
         setRelatedProducts(products);
       } catch (error) {
         console.error("Error fetching related products:", error);

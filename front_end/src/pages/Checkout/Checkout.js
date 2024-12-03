@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState, useMemo } from 'react';
 import CartContext from '../../components/CartContext/CartContext';
 import './Checkout.css';
 import apiService from '../../api/api';
+import { MdDelete } from "react-icons/md";
 
 const Checkout = () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -60,18 +61,54 @@ const Checkout = () => {
         return price ? price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'N/A';
     };
 
-    // Hàm tính tổng số lượng sản phẩm
-    const calculateTotalQuantity = () => {
-        return userOrders.reduce((total, item) => total + item.quantity, 0);
+    const handleCancelOrder = async (orderId) => {
+        const confirmCancel = window.confirm('Bạn có muốn hủy đơn hàng này?');
+        if (!confirmCancel) {
+            return; // Exit if the user cancels the confirmation dialog.
+        }
+    
+        try {
+            // Call the API to cancel the order
+            const response = await apiService.cancelOrder(orderId);
+
+            const userId = localStorage.getItem('userID')
+    
+            // Check if the response indicates success
+            if (response.data && response.data.success) {
+                // Update the UI by removing the canceled order
+                // setUserOrders((prevOrders) => prevOrders.filter(order => order._id !== orderId));
+                alert('Hủy đơn hàng thành công!');
+                const updatedOrdersResponse = await apiService.getUserOrders(userId);
+                setUserOrders(updatedOrdersResponse.data.orders); 
+            } else {
+                alert('Hủy đơn hàng thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi hủy đơn hàng:', error);
+            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+        }
     };
 
-    // Hàm tính tổng giá trị của các sản phẩm
-    const calculateTotalPrice = () => {
-        return userOrders.reduce((total, item) => {
-            return total + (Number(item.totalAmount) * item.quantity);
-        }, 0);
-    };
+    const handleDeleteOrder = async (orderId) => {
+        try {
+            // Call the API endpoint to delete the order
+            const response = await apiService.deleteOrder(orderId);
 
+            console.log(response)
+
+            // Check if the response is as expected
+            if (response.status === 200) {
+                // Remove the deleted order from the state
+                setUserOrders((prevOrders) => prevOrders.filter(order => order._id !== orderId));
+                alert('Đã xóa đơn hàng thành công!');
+            } else {
+                alert('Xóa đơn hàng thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa đơn hàng', error);
+            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+        }
+    };
 
 
     const calculateEstimatedDeliveryDate = (days) => {
@@ -103,23 +140,6 @@ const Checkout = () => {
         // }
     };
 
-    const handleCancelOrder = async (orderId) => {
-        try {
-            // Gọi API để hủy đơn hàng (ví dụ: apiService.cancelOrder(orderId))
-            const response = await apiService.cancelOrder(orderId);
-            if (response.data.success) {
-                // Cập nhật lại danh sách đơn hàng sau khi hủy thành công
-                setUserOrders((prevOrders) => prevOrders.filter(order => order._id !== orderId));
-                alert('Hủy đơn hàng thành công!');
-            } else {
-                alert('Hủy đơn hàng thất bại. Vui lòng thử lại.');
-            }
-        } catch (error) {
-            console.error('Lỗi khi hủy đơn hàng', error);
-            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
-        }
-    };
-
 
     const handleCODPayment = async (e) => {
         e.preventDefault();
@@ -143,7 +163,11 @@ const Checkout = () => {
     }
 
     if (!user) {
-        return <div>Không có thông tin người dùng. Vui lòng đăng nhập.</div>;
+        return (
+            <div className="no-user-info">
+                <p>Không có thông tin người dùng. Vui lòng đăng nhập.</p>
+            </div>
+        );        
     }
 
     const getStatusCardStyle = (status) => {
@@ -242,8 +266,31 @@ const Checkout = () => {
                                 </div>
 
                                 {/* Order Status Card */}
-                                <div className="order-status-card" style={getStatusCardStyle(item.orderStatus)}>
-                                    <p>{getStatusText(item.orderStatus)}</p>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <p style={{ marginRight: '10px' }}>Trạng thái :</p>
+                                        <div className="order-status-card" style={getStatusCardStyle(item.orderStatus)}>
+                                            <p>{getStatusText(item.orderStatus)}</p>
+                                        </div>
+                                    </div>
+                                    {/* Cancel Order Button */}
+                                    {item.orderStatus !== 'Cancelled' ? (
+                                        <button
+                                            className="cancel-order-button"
+                                            onClick={() => handleCancelOrder(item._id)}
+                                        >
+                                            Hủy đơn hàng
+                                            
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="cancel-order-button"
+                                            onClick={() => handleDeleteOrder(item._id)}
+                                        >
+                                            Xóa đơn hàng
+                                            <MdDelete style={{ fontSize: '20px', justifyContent: 'center', alignItems: 'center' }} />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}

@@ -53,7 +53,7 @@ function Header() {
                 <div className="logo">
                 <img src={"https://d1csarkz8obe9u.cloudfront.net/posterpreviews/hi-tech-logo-green-design-template-d57e7fb993808c268150e0da8633654e_screen.jpg?ts=1584477855"} alt="Logo" />
                     <span className="about-name">
-                        <Link to="/"> <b>TECH STORE</b></Link>
+                        <Link to="/"> <b> HI TECH </b></Link>
                     </span>
                 </div>
                 

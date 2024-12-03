@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Modal, Input, message, Spin, Card } from "antd";
+import apiService from "../../api/api";
 
 const AdminProfile = () => {
   const [admin, setAdmin] = useState(null);
@@ -25,11 +26,7 @@ const AdminProfile = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5000/admin/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiService.getAdminProfile()
         console.log(response.data.admin)
         setAdmin(response.data.admin);
         setUpdatedAdmin(response.data.admin); // Để sử dụng cho form cập nhật
@@ -54,15 +51,7 @@ const AdminProfile = () => {
         return;
       }
 
-      const response = await axios.patch(
-        `http://localhost:5000/admin/profile`,
-        updatedAdmin,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService.updateAdminProfile(updatedAdmin)
       console.log(response.data.message)
       setAdmin(response.data.admin);
       message.success("Cập nhật thông tin thành công!");
@@ -90,15 +79,7 @@ const AdminProfile = () => {
         return;
       }
 
-      const response = await axios.patch(
-        `http://localhost:5000/admin/change-password`,
-        passwords,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService.changeAdminPassword(passwords)
 
       message.success(response.data.message || "Đổi mật khẩu thành công!");
       setIsPasswordModalVisible(false);
