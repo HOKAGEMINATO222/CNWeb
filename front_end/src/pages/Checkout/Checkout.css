@@ -253,8 +253,9 @@ h1 {
 .order-status-card {
     flex-shrink: 0; /* Prevent status card from shrinking */
     width: 150px;
-    height: 100px;
+    height: auto;
     display: flex;
+    margin-top: 10px;
     justify-content: center;
     align-items: center;
     text-align: center;

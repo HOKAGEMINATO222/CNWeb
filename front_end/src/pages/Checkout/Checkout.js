@@ -228,8 +228,8 @@ const Checkout = () => {
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{ marginTop: '30px' }}>
-                                        <h4>Tổng tiền: {item.totalAmount}</h4>
+                                    <div style={{ marginTop: '10px' }}>
+                                        <h4>Tổng tiền: {formatPrice(item.totalAmount)}</h4>
                                     </div>
                                     <div className="date-form">
                                         <div className="date-inf" style={{ marginTop: '10px' }}>
