@@ -29,6 +29,9 @@ const CommentAndRating = ({ product, onOpenPopup }) => {
   const fetchComments = async () => {
     try {
       const response = await AllApi.getComments(product._id);
+
+      console.log(response)
+
       if (Array.isArray(response.data.comments)) {
         setComments(response.data.comments); // Ensure it's an array
         console.log("Comments data:", comments[0]);

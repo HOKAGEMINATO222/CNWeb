@@ -11,14 +11,21 @@ const app = express();
 require('dotenv').config();
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://web-hitech.web.app'],  
+    origin: 'https://web-hitech.web.app',  
     methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 };
 
 
+
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+    console.log('Request Origin:', req.headers.origin);
+    next();
+});
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
