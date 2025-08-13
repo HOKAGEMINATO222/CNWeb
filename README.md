@@ -3,22 +3,6 @@
 ## Giới thiệu
 Website thương mại điện tử là một nền tảng cho phép người dùng mua các sản phẩm hoặc dịch vụ trực tuyến. Mục tiêu của dự án này là xây dựng một website thương mại điện tử hiện đại với giao diện thân thiện, dễ sử dụng, và tích hợp các chức năng như giỏ hàng, thanh toán, và quản lý sản phẩm.
 
-## Thành viên nhóm
-1. **Phạm Minh Hoàng**
-   - MSSV: 20215582
-   - Vai trò: Frontend developer
-
-2. **Phan Việt Hoàng**
-   - MSSV: 20210372
-   - Vai trò: Backend developer
-
-3. **Vũ Trần Hoàng**
-   - MSSV: 20210374
-   - Vai trò: Backend developer
-
-4. **Vũ Minh Hoàng**
-   - MSSV: 20215386
-   - Vai trò: Frontend developer
 
 ## Chức năng chính
 - **Quản lý sản phẩm**: Cho phép người dùng xem, tìm kiếm, và thêm sản phẩm vào giỏ hàng.
